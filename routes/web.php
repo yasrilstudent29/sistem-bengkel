@@ -1,16 +1,20 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\ServisController;
+use App\Http\Controllers\Admin\MekanikController;
+use App\Http\Controllers\Admin\SparePartController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\User\KendaraanController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-// Route untuk user yang sudah login dan verified
+// Dashboard redirect berdasarkan role
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // Dashboard redirect berdasarkan role
     Route::get('/dashboard', function () {
         if (auth()->user()->isAdmin()) {
             return redirect()->route('admin.dashboard');
@@ -24,21 +28,101 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Route khusus Admin
-Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
-});
+// ================================
+// ADMIN ROUTES
+// ================================
+Route::middleware(['auth', 'verified', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
 
-// Route khusus User
-Route::middleware(['auth', 'verified'])->prefix('user')->name('user.')->group(function () {
-    Route::get('/dashboard', function () {
-        if (auth()->user()->isAdmin()) {
-            return redirect()->route('admin.dashboard');
-        }
-        return view('user.dashboard');
-    })->name('dashboard');
-});
+        // Dashboard Admin
+        Route::get('/dashboard', function () {
+            $totalServis = \App\Models\Servis::count();
+            $servisProses = \App\Models\Servis::where('status', 'proses')->count();
+            $servisSelesai = \App\Models\Servis::where('status', 'selesai')->count();
+            $totalMekanik = \App\Models\Mekanik::where('status', 'aktif')->count();
+            $totalKendaraan = \App\Models\Kendaraan::count();
+            $totalUser = \App\Models\User::where('role', 'user')->count();
+            $servisTerbaru = \App\Models\Servis::with(['kendaraan.user', 'mekanik'])
+                ->latest()->take(5)->get();
+
+            return view('admin.dashboard', compact(
+                'totalServis',
+                'servisProses',
+                'servisSelesai',
+                'totalMekanik',
+                'totalKendaraan',
+                'totalUser',
+                'servisTerbaru'
+            ));
+        })->name('dashboard');
+
+        // Manajemen Servis
+        Route::resource('servis', ServisController::class);
+
+        // Manajemen Mekanik
+        Route::resource('mekanik', MekanikController::class);
+
+        // Manajemen Spare Parts
+        Route::resource('spare-parts', SparePartController::class);
+
+        // Manajemen User & Role
+        Route::get('/users', [UserController::class, 'index'])->name('users.index');
+        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    });
+
+// ================================
+// USER ROUTES
+// ================================
+Route::middleware(['auth', 'verified'])
+    ->prefix('user')
+    ->name('user.')
+    ->group(function () {
+
+        // Dashboard User
+        Route::get('/dashboard', function () {
+            if (auth()->user()->isAdmin()) {
+                return redirect()->route('admin.dashboard');
+            }
+
+            $kendaraans = \App\Models\Kendaraan::where('user_id', auth()->id())->get();
+            $servisAktif = \App\Models\Servis::whereHas('kendaraan', function ($q) {
+                $q->where('user_id', auth()->id());
+            })->whereIn('status', ['menunggu', 'proses'])->count();
+
+            $riwayatServis = \App\Models\Servis::whereHas('kendaraan', function ($q) {
+                $q->where('user_id', auth()->id());
+            })->with(['kendaraan', 'mekanik'])->latest()->take(5)->get();
+
+            return view('user.dashboard', compact(
+                'kendaraans',
+                'servisAktif',
+                'riwayatServis'
+            ));
+        })->name('dashboard');
+
+        // Manajemen Kendaraan
+        Route::resource('kendaraan', KendaraanController::class)->except(['show']);
+
+        // Riwayat Servis User
+        Route::get('/servis', function () {
+            $servis = \App\Models\Servis::whereHas('kendaraan', function ($q) {
+                $q->where('user_id', auth()->id());
+            })->with(['kendaraan', 'mekanik'])->latest()->paginate(10);
+
+            return view('user.servis.index', compact('servis'));
+        })->name('servis.index');
+
+        Route::get('/servis/{servis}', function (\App\Models\Servis $servis) {
+            if ($servis->kendaraan->user_id !== auth()->id()) {
+                abort(403);
+            }
+            $servis->load(['kendaraan', 'mekanik', 'spareParts']);
+            return view('user.servis.show', compact('servis'));
+        })->name('servis.show');
+    });
 
 require __DIR__.'/auth.php';
