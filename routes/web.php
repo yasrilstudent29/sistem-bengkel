@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\User\KendaraanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\KendaraanController as AdminKendaraanController;
+use App\Http\Controllers\Admin\CustomerController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -76,6 +77,9 @@ Route::middleware(['auth', 'verified', 'admin'])
 
         // Manajemen Kendaraan (Admin)
         Route::resource('kendaraan', AdminKendaraanController::class)->except(['show']);
+
+        // Manajemen Customer
+        Route::resource('customers', CustomerController::class)->except(['show']);
     });
 
 // ================================
