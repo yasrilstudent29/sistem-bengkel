@@ -23,6 +23,9 @@
                         <x-nav-link :href="route('admin.mekanik.index')" :active="request()->routeIs('admin.mekanik.*')">
                             Mekanik
                         </x-nav-link>
+                        <x-nav-link :href="route('admin.kendaraan.index')" :active="request()->routeIs('admin.kendaraan.*')">
+                            Kendaraan
+                        </x-nav-link>
                         <x-nav-link :href="route('admin.spare-parts.index')" :active="request()->routeIs('admin.spare-parts.*')">
                             Spare Part
                         </x-nav-link>
@@ -117,6 +120,9 @@
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.mekanik.index')" :active="request()->routeIs('admin.mekanik.*')">
                     Mekanik
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('admin.kendaraan.index')" :active="request()->routeIs('admin.kendaraan.*')">
+                    Kendaraan
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.spare-parts.index')" :active="request()->routeIs('admin.spare-parts.*')">
                     Spare Part
