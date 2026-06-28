@@ -47,4 +47,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Kendaraan::class);
     }
+
+    public function customer()
+    {
+    return $this->hasOne(Customer::class);
+    }
 }
