@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\SparePartController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\User\KendaraanController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\KendaraanController as AdminKendaraanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -72,6 +73,9 @@ Route::middleware(['auth', 'verified', 'admin'])
         Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
         Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
+        // Manajemen Kendaraan (Admin)
+        Route::resource('kendaraan', AdminKendaraanController::class)->except(['show']);
     });
 
 // ================================
