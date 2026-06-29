@@ -4,8 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Detail Servis #{{ $servis->id }}
             </h2>
-            <a href="{{ route('user.servis.index') }}"
-               class="text-sm text-gray-600 hover:underline">← Kembali</a>
+            <a href="{{ route('user.servis.index') }}" class="text-sm text-gray-600 hover:underline">← Kembali</a>
         </div>
     </x-slot>
 
@@ -14,7 +13,7 @@
 
             {{-- Status Banner --}}
             @php
-                $statusColor = match($servis->status) {
+                $statusColor = match ($servis->status) {
                     'menunggu' => 'bg-yellow-50 border-yellow-400 text-yellow-700',
                     'proses' => 'bg-blue-50 border-blue-400 text-blue-700',
                     'selesai' => 'bg-green-50 border-green-400 text-green-700',
@@ -24,7 +23,7 @@
             @endphp
             <div class="border-l-4 p-4 rounded {{ $statusColor }}">
                 <p class="font-bold text-lg">Status: {{ ucfirst($servis->status) }}</p>
-                @if($servis->status === 'menunggu')
+                @if ($servis->status === 'menunggu')
                     <p class="text-sm mt-1">Kendaraan Anda sedang dalam antrian servis.</p>
                 @elseif($servis->status === 'proses')
                     <p class="text-sm mt-1">Kendaraan Anda sedang dalam proses perbaikan.</p>
@@ -65,7 +64,7 @@
                     <div>
                         <p class="text-gray-500">Mekanik</p>
                         <p class="font-medium">{{ $servis->mekanik->nama }}</p>
-                        @if($servis->mekanik->spesialisasi)
+                        @if ($servis->mekanik->spesialisasi)
                             <p class="text-gray-400 text-xs">{{ $servis->mekanik->spesialisasi }}</p>
                         @endif
                     </div>
@@ -85,7 +84,7 @@
                         <p class="text-gray-500">Keluhan</p>
                         <p class="font-medium">{{ $servis->keluhan }}</p>
                     </div>
-                    @if($servis->catatan_mekanik)
+                    @if ($servis->catatan_mekanik)
                         <div class="col-span-2">
                             <p class="text-gray-500">Catatan Mekanik</p>
                             <p class="font-medium">{{ $servis->catatan_mekanik }}</p>
@@ -103,7 +102,8 @@
                             <tr>
                                 <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase">Nama</th>
                                 <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase">Jumlah</th>
-                                <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase">Harga Satuan</th>
+                                <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase">Harga Satuan
+                                </th>
                                 <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase">Subtotal</th>
                             </tr>
                         </thead>
@@ -112,8 +112,11 @@
                                 <tr>
                                     <td class="px-4 py-3">{{ $part->nama }}</td>
                                     <td class="px-4 py-3">{{ $part->pivot->jumlah }}</td>
-                                    <td class="px-4 py-3">Rp {{ number_format($part->pivot->harga_satuan, 0, ',', '.') }}</td>
-                                    <td class="px-4 py-3">Rp {{ number_format($part->pivot->jumlah * $part->pivot->harga_satuan, 0, ',', '.') }}</td>
+                                    <td class="px-4 py-3">Rp
+                                        {{ number_format($part->pivot->harga_satuan, 0, ',', '.') }}</td>
+                                    <td class="px-4 py-3">Rp
+                                        {{ number_format($part->pivot->jumlah * $part->pivot->harga_satuan, 0, ',', '.') }}
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
