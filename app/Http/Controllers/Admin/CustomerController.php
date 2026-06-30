@@ -15,9 +15,35 @@ class CustomerController extends Controller
         return view('admin.customers.index', compact('customers'));
     }
 
+    public function show(Customer $customer)
+    {
+        $customer->load('user');
+
+        $kendaraans = \App\Models\Kendaraan::where('user_id', $customer->user_id)
+            ->withCount('servis')
+            ->latest()
+            ->get();
+
+        $servisBerjalan = \App\Models\Servis::whereHas('kendaraan', function ($q) use ($customer) {
+            $q->where('user_id', $customer->user_id);
+        })->whereIn('status', ['menunggu', 'proses'])
+            ->with(['kendaraan', 'mekanik'])
+            ->latest()
+            ->get();
+
+        $riwayatServis = \App\Models\Servis::whereHas('kendaraan', function ($q) use ($customer) {
+            $q->where('user_id', $customer->user_id);
+        })->whereIn('status', ['selesai', 'diambil'])
+            ->with(['kendaraan', 'mekanik'])
+            ->latest()
+            ->take(10)
+            ->get();
+
+        return view('admin.customers.show', compact('customer', 'kendaraans', 'servisBerjalan', 'riwayatServis'));
+    }
+
     public function create()
     {
-        // Hanya tampilkan user yang belum punya data customer
         $users = User::where('role', 'user')
             ->whereDoesntHave('customer')
             ->orderBy('name')
@@ -30,10 +56,8 @@ class CustomerController extends Controller
         $validated = $request->validate([
             'user_id'      => ['required', 'exists:users,id', 'unique:customers,user_id'],
             'nama_lengkap' => ['required', 'string', 'max:255'],
-            'nama_pendek'  => ['nullable', 'string', 'max:100'],
             'no_telepon'   => ['nullable', 'string', 'max:20'],
-            'alamat'       => ['nullable', 'string'],
-            'catatan'      => ['nullable', 'string'],
+            'alamat'       => ['nullable', 'string', 'max:255'],
         ], [
             'user_id.required'      => 'User wajib dipilih.',
             'user_id.exists'        => 'User tidak valid.',
@@ -58,10 +82,8 @@ class CustomerController extends Controller
     {
         $validated = $request->validate([
             'nama_lengkap' => ['required', 'string', 'max:255'],
-            'nama_pendek'  => ['nullable', 'string', 'max:100'],
             'no_telepon'   => ['nullable', 'string', 'max:20'],
-            'alamat'       => ['nullable', 'string'],
-            'catatan'      => ['nullable', 'string'],
+            'alamat'       => ['nullable', 'string', 'max:255'],
         ], [
             'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
         ]);

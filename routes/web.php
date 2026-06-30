@@ -79,7 +79,7 @@ Route::middleware(['auth', 'verified', 'admin'])
         Route::resource('kendaraan', AdminKendaraanController::class)->except(['show']);
 
         // Manajemen Customer
-        Route::resource('customers', CustomerController::class)->except(['show']);
+        Route::resource('customers', CustomerController::class);
     });
 
 // ================================
