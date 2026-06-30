@@ -256,8 +256,16 @@
             </header>
 
             {{-- Page Content --}}
-            <main class="flex-1 overflow-y-auto p-6 bg-white">
-                {{ $slot }}
+            <main class="flex-1 overflow-y-auto bg-white">
+                @isset($header)
+                    <div class="px-6 py-5 border-b border-gray-100">
+                        {{ $header }}
+                    </div>
+                @endisset
+
+                <div class="p-6">
+                    {{ $slot }}
+                </div>
             </main>
 
         </div>
