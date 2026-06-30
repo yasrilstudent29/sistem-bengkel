@@ -75,8 +75,8 @@ Route::middleware(['auth', 'verified', 'admin'])
         Route::patch('/users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
 
-        // Manajemen Kendaraan (Admin)
-        Route::resource('kendaraan', AdminKendaraanController::class)->except(['show']);
+       // Manajemen Kendaraan (Admin)
+        Route::resource('kendaraan', AdminKendaraanController::class);
 
         // Manajemen Customer
         Route::resource('customers', CustomerController::class)->except(['show']);

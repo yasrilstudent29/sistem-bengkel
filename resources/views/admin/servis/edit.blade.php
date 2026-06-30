@@ -22,7 +22,8 @@
                             @foreach ($kendaraans as $kendaraan)
                                 <option value="{{ $kendaraan->id }}"
                                     {{ old('kendaraan_id', $servis->kendaraan_id) == $kendaraan->id ? 'selected' : '' }}>
-                                    {{ $kendaraan->nama_kendaraan }} ({{ $kendaraan->plat_nomor }}) -
+                                    {{ $kendaraan->tahun }} {{ $kendaraan->merek }} {{ $kendaraan->model }}
+                                    ({{ $kendaraan->plat_nomor }}) -
                                     {{ $kendaraan->user->name }}
                                 </option>
                             @endforeach

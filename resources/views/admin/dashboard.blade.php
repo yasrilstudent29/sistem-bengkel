@@ -134,7 +134,7 @@
                         @forelse ($servisTerbaru as $item)
                             <tr class="hover:bg-gray-50 transition">
                                 <td class="px-6 py-4">
-                                    <p class="text-sm font-medium text-gray-900">{{ $item->kendaraan->nama_kendaraan }}</p>
+                                    <p class="text-sm font-medium text-gray-900">{{ $item->kendaraan->tahun }} {{ $item->kendaraan->merek }} {{ $item->kendaraan->model }}</p>
                                     <p class="text-xs text-gray-400">{{ $item->kendaraan->plat_nomor }}</p>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-600">{{ $item->kendaraan->user->name }}</td>

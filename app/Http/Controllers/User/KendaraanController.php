@@ -11,11 +11,13 @@ class KendaraanController extends Controller
 {
     public function index()
     {
-        $kendaraans = Kendaraan::where('user_id', Auth::id())
-            ->latest()
-            ->paginate(10);
+    $kendaraans = Kendaraan::where('user_id', Auth::id())
+        ->latest()
+        ->paginate(10);
 
-        return view('user.kendaraan.index', compact('kendaraans'));
+    $isCustomerVerified = Auth::user()->customer()->exists();
+
+    return view('user.kendaraan.index', compact('kendaraans', 'isCustomerVerified'));
     }
 
     public function create()
@@ -26,23 +28,24 @@ class KendaraanController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama_kendaraan' => ['required', 'string', 'max:255'],
-            'merek' => ['required', 'string', 'max:255'],
-            'model' => ['required', 'string', 'max:255'],
-            'tahun' => ['required', 'digits:4', 'integer', 'min:1900', 'max:' . date('Y')],
+            'merek'      => ['required', 'string', 'max:255'],
+            'model'      => ['required', 'string', 'max:255'],
+            'tahun'      => ['required', 'digits:4', 'integer', 'min:1900', 'max:' . date('Y')],
+            'odometer'   => ['nullable', 'integer', 'min:0'],
+            'warna'      => ['nullable', 'string', 'max:50'],
             'plat_nomor' => ['required', 'string', 'max:20', 'unique:kendaraan,plat_nomor'],
-            'jenis' => ['required', 'in:motor,mobil'],
+            'vin'        => ['nullable', 'string', 'max:30', 'unique:kendaraan,vin'],
+            'jenis'      => ['required', 'in:motor,mobil'],
         ], [
-            'nama_kendaraan.required' => 'Nama kendaraan wajib diisi.',
-            'merek.required' => 'Merek kendaraan wajib diisi.',
-            'model.required' => 'Model kendaraan wajib diisi.',
-            'tahun.required' => 'Tahun kendaraan wajib diisi.',
-            'tahun.digits' => 'Tahun harus 4 digit.',
-            'tahun.min' => 'Tahun tidak valid.',
-            'tahun.max' => 'Tahun tidak boleh melebihi tahun sekarang.',
+            'merek.required'      => 'Merek kendaraan wajib diisi.',
+            'model.required'      => 'Model kendaraan wajib diisi.',
+            'tahun.required'      => 'Tahun kendaraan wajib diisi.',
+            'tahun.digits'        => 'Tahun harus 4 digit.',
+            'tahun.max'           => 'Tahun tidak boleh melebihi tahun sekarang.',
             'plat_nomor.required' => 'Plat nomor wajib diisi.',
-            'plat_nomor.unique' => 'Plat nomor sudah terdaftar.',
-            'jenis.required' => 'Jenis kendaraan wajib dipilih.',
+            'plat_nomor.unique'   => 'Plat nomor sudah terdaftar.',
+            'vin.unique'          => 'VIN sudah terdaftar.',
+            'jenis.required'      => 'Jenis kendaraan wajib dipilih.',
         ]);
 
         $validated['user_id'] = Auth::id();
@@ -56,7 +59,6 @@ class KendaraanController extends Controller
 
     public function edit(Kendaraan $kendaraan)
     {
-        // Pastikan user hanya bisa edit kendaraan miliknya
         if ($kendaraan->user_id !== Auth::id()) {
             abort(403, 'Akses ditolak.');
         }
@@ -66,29 +68,28 @@ class KendaraanController extends Controller
 
     public function update(Request $request, Kendaraan $kendaraan)
     {
-        // Pastikan user hanya bisa update kendaraan miliknya
         if ($kendaraan->user_id !== Auth::id()) {
             abort(403, 'Akses ditolak.');
         }
 
         $validated = $request->validate([
-            'nama_kendaraan' => ['required', 'string', 'max:255'],
-            'merek' => ['required', 'string', 'max:255'],
-            'model' => ['required', 'string', 'max:255'],
-            'tahun' => ['required', 'digits:4', 'integer', 'min:1900', 'max:' . date('Y')],
+            'merek'      => ['required', 'string', 'max:255'],
+            'model'      => ['required', 'string', 'max:255'],
+            'tahun'      => ['required', 'digits:4', 'integer', 'min:1900', 'max:' . date('Y')],
+            'odometer'   => ['nullable', 'integer', 'min:0'],
+            'warna'      => ['nullable', 'string', 'max:50'],
             'plat_nomor' => ['required', 'string', 'max:20', 'unique:kendaraan,plat_nomor,' . $kendaraan->id],
-            'jenis' => ['required', 'in:motor,mobil'],
+            'vin'        => ['nullable', 'string', 'max:30', 'unique:kendaraan,vin,' . $kendaraan->id],
+            'jenis'      => ['required', 'in:motor,mobil'],
         ], [
-            'nama_kendaraan.required' => 'Nama kendaraan wajib diisi.',
-            'merek.required' => 'Merek kendaraan wajib diisi.',
-            'model.required' => 'Model kendaraan wajib diisi.',
-            'tahun.required' => 'Tahun kendaraan wajib diisi.',
-            'tahun.digits' => 'Tahun harus 4 digit.',
-            'tahun.min' => 'Tahun tidak valid.',
-            'tahun.max' => 'Tahun tidak boleh melebihi tahun sekarang.',
+            'merek.required'      => 'Merek kendaraan wajib diisi.',
+            'model.required'      => 'Model kendaraan wajib diisi.',
+            'tahun.required'      => 'Tahun kendaraan wajib diisi.',
+            'tahun.digits'        => 'Tahun harus 4 digit.',
             'plat_nomor.required' => 'Plat nomor wajib diisi.',
-            'plat_nomor.unique' => 'Plat nomor sudah terdaftar.',
-            'jenis.required' => 'Jenis kendaraan wajib dipilih.',
+            'plat_nomor.unique'   => 'Plat nomor sudah terdaftar.',
+            'vin.unique'          => 'VIN sudah terdaftar.',
+            'jenis.required'      => 'Jenis kendaraan wajib dipilih.',
         ]);
 
         $kendaraan->update($validated);
@@ -100,7 +101,6 @@ class KendaraanController extends Controller
 
     public function destroy(Kendaraan $kendaraan)
     {
-        // Pastikan user hanya bisa hapus kendaraan miliknya
         if ($kendaraan->user_id !== Auth::id()) {
             abort(403, 'Akses ditolak.');
         }

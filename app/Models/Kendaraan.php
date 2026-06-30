@@ -10,11 +10,13 @@ class Kendaraan extends Model
 
     protected $fillable = [
         'user_id',
-        'nama_kendaraan',
         'merek',
         'model',
         'tahun',
+        'odometer',
+        'warna',
         'plat_nomor',
+        'vin',
         'jenis',
     ];
 
@@ -26,5 +28,10 @@ class Kendaraan extends Model
     public function servis()
     {
         return $this->hasMany(Servis::class);
+    }
+
+    public function getNamaLengkapAttribute()
+    {
+        return "{$this->tahun} {$this->merek} {$this->model}";
     }
 }

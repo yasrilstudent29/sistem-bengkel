@@ -60,7 +60,7 @@
                         @foreach ($kendaraans as $kendaraan)
                             <div class="px-6 py-4 flex items-center justify-between">
                                 <div>
-                                    <p class="font-medium text-gray-900">{{ $kendaraan->nama_kendaraan }}</p>
+                                    <p class="font-medium text-gray-900">{{ $kendaraan->tahun }} {{ $kendaraan->merek }} {{ $kendaraan->model }}</p>
                                     <p class="text-sm text-gray-500">{{ $kendaraan->merek }} {{ $kendaraan->model }} •
                                         {{ $kendaraan->tahun }} • {{ $kendaraan->plat_nomor }}</p>
                                 </div>
@@ -95,7 +95,7 @@
                         @foreach ($riwayatServis as $item)
                             <div class="px-6 py-4 flex items-center justify-between">
                                 <div>
-                                    <p class="font-medium text-gray-900">{{ $item->kendaraan->nama_kendaraan }}</p>
+                                    <p class="font-medium text-gray-900">{{ $item->kendaraan->tahun }} {{ $item->kendaraan->merek }} {{ $item->kendaraan->model }}</p>
                                     <p class="text-sm text-gray-500">
                                         {{ $item->tanggal_masuk->format('d M Y') }} •
                                         {{ Str::limit($item->keluhan, 50) }}
