@@ -1,6 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <a href="{{ route('admin.customers.index') }}" class="text-sm text-gray-600 hover:underline flex items-center gap-1">
+        <a href="{{ route('admin.customers.index') }}"
+            class="text-sm text-gray-600 hover:underline flex items-center gap-1">
             ← Back to customers
         </a>
     </x-slot>
@@ -79,9 +80,11 @@
                     </div>
                     <div class="space-y-3">
                         @forelse ($kendaraans as $kendaraan)
-                            <div class="flex items-center gap-3 p-3 rounded-lg border border-gray-100">
+                            <a href="{{ route('admin.kendaraan.show', $kendaraan) }}"
+                                class="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition">
                                 <div class="w-9 h-9 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
-                                    <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -97,79 +100,79 @@
                                         — {{ $kendaraan->servis_count }}x servis
                                     </p>
                                 </div>
-                            </div>
-                        @empty
-                            <p class="text-sm text-gray-400">Belum ada kendaraan terdaftar.</p>
-                        @endforelse
                     </div>
-                </div>
-            </div>
-
-            {{-- Servis Berjalan --}}
-            <div class="bg-white rounded-xl border border-gray-100 shadow-sm">
-                <div class="px-6 py-4 border-b border-gray-100">
-                    <h3 class="font-bold text-gray-900">Servis Berjalan</h3>
-                </div>
-                <div class="divide-y divide-gray-50">
-                    @forelse ($servisBerjalan as $item)
-                        <div class="px-6 py-4 flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-semibold text-gray-900">
-                                    {{ $item->kendaraan->nama_kendaraan }}
-                                    <span class="text-gray-400 font-normal">({{ $item->kendaraan->plat_nomor }})</span>
-                                </p>
-                                <p class="text-xs text-gray-500 mt-0.5">
-                                    {{ Str::limit($item->keluhan, 50) }} — Mekanik: {{ $item->mekanik->nama }}
-                                </p>
-                            </div>
-                            @php
-                                $statusColor = match ($item->status) {
-                                    'menunggu' => 'bg-yellow-100 text-yellow-700',
-                                    'proses' => 'bg-blue-100 text-blue-700',
-                                    default => 'bg-gray-100 text-gray-700',
-                                };
-                            @endphp
-                            <span class="text-xs font-bold px-2.5 py-1 rounded-full {{ $statusColor }}">
-                                {{ ucfirst($item->status) }}
-                            </span>
-                        </div>
-                    @empty
-                        <p class="px-6 py-8 text-center text-sm text-gray-400">Tidak ada servis yang sedang berjalan.</p>
+                @empty
+                    <p class="text-sm text-gray-400">Belum ada kendaraan terdaftar.</p>
                     @endforelse
                 </div>
             </div>
-
-            {{-- Riwayat Servis --}}
-            <div class="bg-white rounded-xl border border-gray-100 shadow-sm">
-                <div class="px-6 py-4 border-b border-gray-100">
-                    <h3 class="font-bold text-gray-900">Riwayat Servis</h3>
-                </div>
-                <div class="divide-y divide-gray-50">
-                    @forelse ($riwayatServis as $item)
-                        <div class="px-6 py-4 flex items-center justify-between">
-                            <div>
-                                <p class="text-sm font-semibold text-gray-900">
-                                    {{ $item->kendaraan->nama_kendaraan }}
-                                    <span class="text-gray-400 font-normal">({{ $item->kendaraan->plat_nomor }})</span>
-                                </p>
-                                <p class="text-xs text-gray-500 mt-0.5">
-                                    {{ $item->tanggal_masuk->format('d M Y') }} — {{ Str::limit($item->keluhan, 50) }}
-                                </p>
-                            </div>
-                            <div class="text-right">
-                                <p class="text-sm font-semibold text-gray-900">
-                                    Rp {{ number_format($item->total_biaya, 0, ',', '.') }}
-                                </p>
-                                <a href="{{ route('admin.servis.show', $item) }}"
-                                    class="text-xs hover:underline" style="color: #fa7c20;">Lihat detail</a>
-                            </div>
-                        </div>
-                    @empty
-                        <p class="px-6 py-8 text-center text-sm text-gray-400">Belum ada riwayat servis.</p>
-                    @endforelse
-                </div>
-            </div>
-
         </div>
+
+        {{-- Servis Berjalan --}}
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm">
+            <div class="px-6 py-4 border-b border-gray-100">
+                <h3 class="font-bold text-gray-900">Servis Berjalan</h3>
+            </div>
+            <div class="divide-y divide-gray-50">
+                @forelse ($servisBerjalan as $item)
+                    <div class="px-6 py-4 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-900">
+                                {{ $item->kendaraan->nama_kendaraan }}
+                                <span class="text-gray-400 font-normal">({{ $item->kendaraan->plat_nomor }})</span>
+                            </p>
+                            <p class="text-xs text-gray-500 mt-0.5">
+                                {{ Str::limit($item->keluhan, 50) }} — Mekanik: {{ $item->mekanik->nama }}
+                            </p>
+                        </div>
+                        @php
+                            $statusColor = match ($item->status) {
+                                'menunggu' => 'bg-yellow-100 text-yellow-700',
+                                'proses' => 'bg-blue-100 text-blue-700',
+                                default => 'bg-gray-100 text-gray-700',
+                            };
+                        @endphp
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-full {{ $statusColor }}">
+                            {{ ucfirst($item->status) }}
+                        </span>
+                    </div>
+                @empty
+                    <p class="px-6 py-8 text-center text-sm text-gray-400">Tidak ada servis yang sedang berjalan.</p>
+                @endforelse
+            </div>
+        </div>
+
+        {{-- Riwayat Servis --}}
+        <div class="bg-white rounded-xl border border-gray-100 shadow-sm">
+            <div class="px-6 py-4 border-b border-gray-100">
+                <h3 class="font-bold text-gray-900">Riwayat Servis</h3>
+            </div>
+            <div class="divide-y divide-gray-50">
+                @forelse ($riwayatServis as $item)
+                    <div class="px-6 py-4 flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-900">
+                                {{ $item->kendaraan->nama_kendaraan }}
+                                <span class="text-gray-400 font-normal">({{ $item->kendaraan->plat_nomor }})</span>
+                            </p>
+                            <p class="text-xs text-gray-500 mt-0.5">
+                                {{ $item->tanggal_masuk->format('d M Y') }} — {{ Str::limit($item->keluhan, 50) }}
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-sm font-semibold text-gray-900">
+                                Rp {{ number_format($item->total_biaya, 0, ',', '.') }}
+                            </p>
+                            <a href="{{ route('admin.servis.show', $item) }}" class="text-xs hover:underline"
+                                style="color: #fa7c20;">Lihat detail</a>
+                        </div>
+                    </div>
+                @empty
+                    <p class="px-6 py-8 text-center text-sm text-gray-400">Belum ada riwayat servis.</p>
+                @endforelse
+            </div>
+        </div>
+
+    </div>
     </div>
 </x-app-layout>
