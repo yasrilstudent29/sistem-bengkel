@@ -30,13 +30,6 @@
                     </div>
 
                     <div>
-                        <x-input-label for="nama_pendek" value="Nama Pendek / Panggilan" />
-                        <x-text-input id="nama_pendek" name="nama_pendek" type="text"
-                            class="block mt-1 w-full" :value="old('nama_pendek', $customer->nama_pendek)" />
-                        <x-input-error :messages="$errors->get('nama_pendek')" class="mt-2" />
-                    </div>
-
-                    <div>
                         <x-input-label for="no_telepon" value="No. Telepon" />
                         <x-text-input id="no_telepon" name="no_telepon" type="text"
                             class="block mt-1 w-full" :value="old('no_telepon', $customer->no_telepon)" />
@@ -44,17 +37,10 @@
                     </div>
 
                     <div>
-                        <x-input-label for="alamat" value="Alamat" />
-                        <textarea id="alamat" name="alamat" rows="3"
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">{{ old('alamat', $customer->alamat) }}</textarea>
+                        <x-input-label for="alamat" value="Alamat (Kota/Wilayah)" />
+                        <x-text-input id="alamat" name="alamat" type="text"
+                            class="block mt-1 w-full" :value="old('alamat', $customer->alamat)" placeholder="Contoh: Ngawi" />
                         <x-input-error :messages="$errors->get('alamat')" class="mt-2" />
-                    </div>
-
-                    <div>
-                        <x-input-label for="catatan" value="Catatan Internal (opsional)" />
-                        <textarea id="catatan" name="catatan" rows="3"
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">{{ old('catatan', $customer->catatan) }}</textarea>
-                        <x-input-error :messages="$errors->get('catatan')" class="mt-2" />
                     </div>
 
                     <div class="flex items-center gap-4 pt-4">
