@@ -17,7 +17,7 @@
                 <div class="grid grid-cols-2 gap-4 text-sm">
                     <div>
                         <p class="text-gray-500">Kendaraan</p>
-                        <p class="font-medium">{{ $servis->kendaraan->nama_kendaraan }}</p>
+                        <p class="font-medium">{{ $servis->kendaraan->tahun }} {{ $servis->kendaraan->merek }} {{ $servis->kendaraan->model }}</p>
                         <p class="text-gray-500">{{ $servis->kendaraan->plat_nomor }}</p>
                     </div>
                     <div>

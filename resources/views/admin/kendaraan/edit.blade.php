@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Edit Kendaraan — {{ $kendaraan->nama_kendaraan }}
+            Edit Kendaraan — {{ $kendaraan->merek }} {{ $kendaraan->model }}
         </h2>
     </x-slot>
 
@@ -16,30 +16,23 @@
                     @method('PUT')
 
                     <div>
-                        <x-input-label for="user_id" value="Pemilik (Email Terdaftar)" />
-                        <select id="user_id" name="user_id" required
+                        <x-input-label for="customer_id" value="Owner (Customer)" />
+                        <select id="customer_id" name="customer_id" required
                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
-                            <option value="">-- Pilih Pemilik --</option>
-                            @foreach ($users as $user)
-                                <option value="{{ $user->id }}"
-                                    {{ old('user_id', $kendaraan->user_id) == $user->id ? 'selected' : '' }}>
-                                    {{ $user->name }} — {{ $user->email }}
+                            <option value="">-- Pilih Customer --</option>
+                            @foreach ($customers as $customer)
+                                <option value="{{ $customer->id }}"
+                                    {{ old('customer_id', $kendaraan->user->customer->id ?? '') == $customer->id ? 'selected' : '' }}>
+                                    {{ $customer->nama_lengkap }} — {{ $customer->user->email }}
                                 </option>
                             @endforeach
                         </select>
-                        <x-input-error :messages="$errors->get('user_id')" class="mt-2" />
-                    </div>
-
-                    <div>
-                        <x-input-label for="nama_kendaraan" value="Nama Kendaraan" />
-                        <x-text-input id="nama_kendaraan" name="nama_kendaraan" type="text"
-                            class="block mt-1 w-full" :value="old('nama_kendaraan', $kendaraan->nama_kendaraan)" required />
-                        <x-input-error :messages="$errors->get('nama_kendaraan')" class="mt-2" />
+                        <x-input-error :messages="$errors->get('customer_id')" class="mt-2" />
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <x-input-label for="merek" value="Merek" />
+                            <x-input-label for="merek" value="Merek (Make)" />
                             <x-text-input id="merek" name="merek" type="text"
                                 class="block mt-1 w-full" :value="old('merek', $kendaraan->merek)" required />
                             <x-input-error :messages="$errors->get('merek')" class="mt-2" />
@@ -61,21 +54,44 @@
                             <x-input-error :messages="$errors->get('tahun')" class="mt-2" />
                         </div>
                         <div>
+                            <x-input-label for="odometer" value="Odometer (km)" />
+                            <x-text-input id="odometer" name="odometer" type="number" min="0"
+                                class="block mt-1 w-full" :value="old('odometer', $kendaraan->odometer)" />
+                            <x-input-error :messages="$errors->get('odometer')" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <x-input-label for="warna" value="Warna" />
+                            <x-text-input id="warna" name="warna" type="text"
+                                class="block mt-1 w-full" :value="old('warna', $kendaraan->warna)" placeholder="Contoh: Hitam" />
+                            <x-input-error :messages="$errors->get('warna')" class="mt-2" />
+                        </div>
+                        <div>
+                            <x-input-label for="jenis" value="Jenis Kendaraan" />
+                            <select id="jenis" name="jenis" required
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                                <option value="motor" {{ old('jenis', $kendaraan->jenis) === 'motor' ? 'selected' : '' }}>Motor</option>
+                                <option value="mobil" {{ old('jenis', $kendaraan->jenis) === 'mobil' ? 'selected' : '' }}>Mobil</option>
+                            </select>
+                            <x-input-error :messages="$errors->get('jenis')" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
                             <x-input-label for="plat_nomor" value="Plat Nomor" />
                             <x-text-input id="plat_nomor" name="plat_nomor" type="text"
                                 class="block mt-1 w-full" :value="old('plat_nomor', $kendaraan->plat_nomor)" required />
                             <x-input-error :messages="$errors->get('plat_nomor')" class="mt-2" />
                         </div>
-                    </div>
-
-                    <div>
-                        <x-input-label for="jenis" value="Jenis Kendaraan" />
-                        <select id="jenis" name="jenis" required
-                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
-                            <option value="motor" {{ old('jenis', $kendaraan->jenis) === 'motor' ? 'selected' : '' }}>Motor</option>
-                            <option value="mobil" {{ old('jenis', $kendaraan->jenis) === 'mobil' ? 'selected' : '' }}>Mobil</option>
-                        </select>
-                        <x-input-error :messages="$errors->get('jenis')" class="mt-2" />
+                        <div>
+                            <x-input-label for="vin" value="VIN (opsional)" />
+                            <x-text-input id="vin" name="vin" type="text"
+                                class="block mt-1 w-full" :value="old('vin', $kendaraan->vin)" placeholder="17-character VIN" />
+                            <x-input-error :messages="$errors->get('vin')" class="mt-2" />
+                        </div>
                     </div>
 
                     <div class="flex items-center gap-4 pt-4">

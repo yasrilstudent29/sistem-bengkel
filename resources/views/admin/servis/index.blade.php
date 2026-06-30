@@ -37,7 +37,7 @@
                                 <tr>
                                     <td class="px-6 py-4 text-sm text-gray-600">{{ $servis->firstItem() + $index }}</td>
                                     <td class="px-6 py-4 text-sm font-medium text-gray-900">
-                                        {{ $item->kendaraan->nama_kendaraan }}
+                                        {{ $item->kendaraan->tahun }} {{ $item->kendaraan->merek }} {{ $item->kendaraan->model }}
                                         <span class="text-gray-500">({{ $item->kendaraan->plat_nomor }})</span>
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-600">{{ $item->kendaraan->user->name }}</td>
