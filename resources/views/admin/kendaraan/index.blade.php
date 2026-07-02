@@ -41,14 +41,21 @@
                         data-model="{{ strtolower($kendaraan->model) }}">
                         <div class="flex items-start justify-between">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
-                                    <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2 2h10l2-2zM13 6h2l3 5v5h-5V6z" />
-                                    </svg>
-                                </div>
+                                @if ($kendaraan->foto)
+                                    <img src="{{ Storage::url($kendaraan->foto) }}" alt="Foto Kendaraan"
+                                        class="w-10 h-10 rounded-lg object-cover border border-gray-200 shrink-0">
+                                @else
+                                    <div
+                                        class="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
+                                        <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2 2h10l2-2zM13 6h2l3 5v5h-5V6z" />
+                                        </svg>
+                                    </div>
+                                @endif
                                 <div>
                                     <p class="font-semibold text-gray-900">
                                         {{ $kendaraan->tahun }} {{ $kendaraan->merek }} {{ $kendaraan->model }}
@@ -76,7 +83,8 @@
                             </div>
                             <div class="flex items-center justify-between">
                                 <span class="text-gray-400">Odometer:</span>
-                                <span class="font-medium">{{ number_format($kendaraan->odometer ?? 0, 0, ',', '.') }} km</span>
+                                <span class="font-medium">{{ number_format($kendaraan->odometer ?? 0, 0, ',', '.') }}
+                                    km</span>
                             </div>
                             <div class="flex items-center justify-between">
                                 <span class="text-gray-400">Warna:</span>
@@ -85,9 +93,11 @@
                             <div class="flex items-center justify-between">
                                 <span class="text-gray-400">Jenis:</span>
                                 @if ($kendaraan->jenis === 'motor')
-                                    <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full">Motor</span>
+                                    <span
+                                        class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-0.5 rounded-full">Motor</span>
                                 @else
-                                    <span class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded-full">Mobil</span>
+                                    <span
+                                        class="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-0.5 rounded-full">Mobil</span>
                                 @endif
                             </div>
                         </div>
@@ -117,7 +127,7 @@
         const searchInput = document.getElementById('searchKendaraan');
         const cards = document.querySelectorAll('.kendaraan-card');
 
-        searchInput.addEventListener('input', function () {
+        searchInput.addEventListener('input', function() {
             const keyword = this.value.toLowerCase();
             cards.forEach(card => {
                 const plat = card.dataset.plat;

@@ -11,7 +11,8 @@
             <x-alert />
 
             <div class="bg-white p-8 shadow-sm sm:rounded-lg">
-                <form action="{{ route('user.kendaraan.update', $kendaraan) }}" method="POST" class="space-y-5">
+                <form action="{{ route('user.kendaraan.update', $kendaraan) }}" method="POST" class="space-y-5"
+                    enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -56,8 +57,10 @@
                             <x-input-label for="jenis" value="Jenis Kendaraan" />
                             <select id="jenis" name="jenis" required
                                 class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
-                                <option value="motor" {{ old('jenis', $kendaraan->jenis) === 'motor' ? 'selected' : '' }}>Motor</option>
-                                <option value="mobil" {{ old('jenis', $kendaraan->jenis) === 'mobil' ? 'selected' : '' }}>Mobil</option>
+                                <option value="motor"
+                                    {{ old('jenis', $kendaraan->jenis) === 'motor' ? 'selected' : '' }}>Motor</option>
+                                <option value="mobil"
+                                    {{ old('jenis', $kendaraan->jenis) === 'mobil' ? 'selected' : '' }}>Mobil</option>
                             </select>
                             <x-input-error :messages="$errors->get('jenis')" class="mt-2" />
                         </div>
@@ -78,6 +81,30 @@
                         </div>
                     </div>
 
+                    <div>
+                        <x-input-label for="foto" value="Foto Kendaraan" />
+
+                        @if ($kendaraan->foto)
+                            <div class="mt-2 mb-3">
+                                <img src="{{ Storage::url($kendaraan->foto) }}" alt="Foto Kendaraan"
+                                    class="w-40 h-32 object-cover rounded-lg border border-gray-200">
+                                <p class="text-xs text-gray-400 mt-1">Foto saat ini. Upload baru untuk mengganti.</p>
+                            </div>
+                        @endif
+
+                        <input id="foto" name="foto" type="file" accept="image/*"
+                            class="mt-1 block w-full text-sm text-gray-500
+        file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0
+        file:text-sm file:font-semibold file:text-white
+        hover:file:opacity-90 cursor-pointer"
+                            onchange="previewFoto(this)">
+                        <div id="preview-container" class="mt-3 hidden">
+                            <img id="preview-foto" src="" alt="Preview"
+                                class="w-40 h-32 object-cover rounded-lg border border-gray-200">
+                        </div>
+                        <x-input-error :messages="$errors->get('foto')" class="mt-2" />
+                    </div>
+
                     <div class="flex items-center gap-4 pt-4">
                         <x-primary-button>Perbarui</x-primary-button>
                         <a href="{{ route('user.kendaraan.index') }}"
@@ -87,4 +114,18 @@
             </div>
         </div>
     </div>
+    <script>
+        function previewFoto(input) {
+            const container = document.getElementById('preview-container');
+            const preview = document.getElementById('preview-foto');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    container.classList.remove('hidden');
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
 </x-app-layout>

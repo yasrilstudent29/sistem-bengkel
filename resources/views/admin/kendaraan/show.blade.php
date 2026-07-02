@@ -1,6 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <a href="{{ route('admin.kendaraan.index') }}" class="text-sm text-gray-600 hover:underline flex items-center gap-1">
+        <a href="{{ route('admin.kendaraan.index') }}"
+            class="text-sm text-gray-600 hover:underline flex items-center gap-1">
             ← Back to vehicles
         </a>
     </x-slot>
@@ -13,21 +14,29 @@
             {{-- Header --}}
             <div class="flex items-center justify-between flex-wrap gap-4">
                 <div class="flex items-center gap-4">
-                    <div class="w-14 h-14 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
-                        <svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2 2h10l2-2zM13 6h2l3 5v5h-5V6z" />
-                        </svg>
-                    </div>
+                    @if ($kendaraan->foto)
+                        <img src="{{ Storage::url($kendaraan->foto) }}" alt="Foto Kendaraan"
+                            class="w-14 h-14 rounded-xl object-cover border border-gray-200 shrink-0">
+                    @else
+                        <div class="w-14 h-14 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+                            <svg class="w-7 h-7 text-orange-500" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2 2h10l2-2zM13 6h2l3 5v5h-5V6z" />
+                            </svg>
+                        </div>
+                    @endif
                     <div>
                         <h2 class="text-2xl font-bold text-gray-900">
                             {{ $kendaraan->tahun }} {{ $kendaraan->merek }} {{ $kendaraan->model }}
                         </h2>
                         <p class="text-gray-500 text-sm">
                             Plat <span class="font-medium">{{ $kendaraan->plat_nomor }}</span>
-                            @if ($kendaraan->warna) — {{ $kendaraan->warna }} @endif
+                            @if ($kendaraan->warna)
+                                — {{ $kendaraan->warna }}
+                            @endif
                             — {{ number_format($kendaraan->odometer ?? 0, 0, ',', '.') }} km
                         </p>
                     </div>
@@ -77,7 +86,9 @@
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-gray-500">Mileage</span>
-                            <span class="font-medium text-gray-900">{{ number_format($kendaraan->odometer ?? 0, 0, ',', '.') }} km</span>
+                            <span
+                                class="font-medium text-gray-900">{{ number_format($kendaraan->odometer ?? 0, 0, ',', '.') }}
+                                km</span>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-gray-500">Jenis</span>
@@ -97,8 +108,10 @@
                                 {{ strtoupper(substr($kendaraan->user->customer->nama_lengkap, 0, 1)) }}
                             </div>
                             <div>
-                                <p class="text-sm font-semibold text-gray-900">{{ $kendaraan->user->customer->nama_lengkap }}</p>
-                                <p class="text-xs text-gray-500">{{ $kendaraan->user->customer->no_telepon ?? '-' }}</p>
+                                <p class="text-sm font-semibold text-gray-900">
+                                    {{ $kendaraan->user->customer->nama_lengkap }}</p>
+                                <p class="text-xs text-gray-500">{{ $kendaraan->user->customer->no_telepon ?? '-' }}
+                                </p>
                             </div>
                         </a>
                     @else
@@ -118,7 +131,8 @@
                             <div>
                                 <p class="text-sm font-semibold text-gray-900">{{ Str::limit($item->keluhan, 50) }}</p>
                                 <p class="text-xs text-gray-500 mt-0.5">
-                                    Mekanik: {{ $item->mekanik->nama }} — Masuk {{ $item->tanggal_masuk->format('d M Y') }}
+                                    Mekanik: {{ $item->mekanik->nama }} — Masuk
+                                    {{ $item->tanggal_masuk->format('d M Y') }}
                                 </p>
                             </div>
                             @php
@@ -133,7 +147,8 @@
                             </span>
                         </div>
                     @empty
-                        <p class="px-6 py-8 text-center text-sm text-gray-400">Tidak ada servis yang sedang berjalan.</p>
+                        <p class="px-6 py-8 text-center text-sm text-gray-400">Tidak ada servis yang sedang berjalan.
+                        </p>
                     @endforelse
                 </div>
             </div>
@@ -156,8 +171,8 @@
                                 <p class="text-sm font-semibold text-gray-900">
                                     Rp {{ number_format($item->total_biaya, 0, ',', '.') }}
                                 </p>
-                                <a href="{{ route('admin.servis.show', $item) }}"
-                                    class="text-xs hover:underline" style="color: #fa7c20;">Lihat detail</a>
+                                <a href="{{ route('admin.servis.show', $item) }}" class="text-xs hover:underline"
+                                    style="color: #fa7c20;">Lihat detail</a>
                             </div>
                         </div>
                     @empty
