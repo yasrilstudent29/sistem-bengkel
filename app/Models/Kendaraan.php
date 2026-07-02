@@ -18,6 +18,7 @@ class Kendaraan extends Model
         'plat_nomor',
         'vin',
         'jenis',
+        'foto',
     ];
 
     public function user()
