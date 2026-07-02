@@ -23,7 +23,8 @@
                                 <option value="{{ $kendaraan->id }}"
                                     {{ old('kendaraan_id') == $kendaraan->id ? 'selected' : '' }}>
                                     {{ $kendaraan->tahun }} {{ $kendaraan->merek }} {{ $kendaraan->model }}
-                                    ({{ $kendaraan->plat_nomor }}) -
+                                    ({{ $kendaraan->plat_nomor }})
+                                    -
                                     {{ $kendaraan->user->name }}
                                 </option>
                             @endforeach
@@ -36,7 +37,7 @@
                         <select id="mekanik_id" name="mekanik_id" required
                             class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
                             <option value="">-- Pilih Mekanik --</option>
-                            @foreach ($mekaniks as $mekanik)
+                            @forelse ($mekaniks as $mekanik)
                                 <option value="{{ $mekanik->id }}"
                                     {{ old('mekanik_id') == $mekanik->id ? 'selected' : '' }}>
                                     {{ $mekanik->nama }}
@@ -44,8 +45,23 @@
                                         ({{ $mekanik->spesialisasi }})
                                     @endif
                                 </option>
-                            @endforeach
+                            @empty
+                            @endforelse
                         </select>
+                        @if ($mekaniks->isEmpty())
+                            <div
+                                class="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-center gap-2">
+                                <svg class="w-4 h-4 text-amber-500 shrink-0" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                                <p class="text-xs text-amber-700">
+                                    Semua mekanik sedang menangani servis. Tunggu hingga salah satu selesai atau tambah
+                                    mekanik baru.
+                                </p>
+                            </div>
+                        @endif
                         <x-input-error :messages="$errors->get('mekanik_id')" class="mt-2" />
                     </div>
 

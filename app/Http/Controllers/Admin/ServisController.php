@@ -22,11 +22,17 @@ class ServisController extends Controller
 
     public function create()
     {
-        $kendaraans = Kendaraan::with('user')->get();
-        $mekaniks = Mekanik::where('status', 'aktif')->get();
-        $spareParts = SparePart::where('stok', '>', 0)->get();
+    $kendaraans = Kendaraan::with('user')->whereHas('user.customer')->get();
 
-        return view('admin.servis.create', compact('kendaraans', 'mekaniks', 'spareParts'));
+    $mekaniks = Mekanik::where('status', 'aktif')
+        ->whereDoesntHave('servis', function ($q) {
+            $q->whereIn('status', ['menunggu', 'proses']);
+        })
+        ->get();
+
+    $spareParts = SparePart::where('stok', '>', 0)->get();
+
+    return view('admin.servis.create', compact('kendaraans', 'mekaniks', 'spareParts'));
     }
 
     public function store(Request $request)
