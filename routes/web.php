@@ -61,7 +61,10 @@ Route::middleware(['auth', 'verified', 'admin'])
         })->name('dashboard');
 
         // Manajemen Servis
-        Route::resource('servis', ServisController::class);
+        Route::resource('servis', ServisController::class)->parameters(['servis' => 'servis']);
+
+        // Struk PDF
+        Route::get('/servis/{servis}/struk', [ServisController::class, 'struk'])->name('servis.struk');
 
         // Manajemen Mekanik
         Route::resource('mekanik', MekanikController::class);

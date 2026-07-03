@@ -9,6 +9,7 @@ use App\Models\Mekanik;
 use App\Models\SparePart;
 use Illuminate\Http\Request;
 
+
 class ServisController extends Controller
 {
     public function index()
@@ -144,5 +145,14 @@ class ServisController extends Controller
         return redirect()
             ->route('admin.servis.index')
             ->with('success', 'Data servis berhasil dihapus.');
+    }
+
+    public function struk(Servis $servis)
+    {
+    $servis->load(['kendaraan.user.customer', 'mekanik', 'spareParts']);
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.servis.struk', compact('servis'));
+
+    return $pdf->download('struk-servis-' . $servis->id . '.pdf');
     }
 }
