@@ -27,12 +27,12 @@ class Servis extends Model
 
     public function kendaraan()
     {
-        return $this->belongsTo(Kendaraan::class);
+        return $this->belongsTo(Kendaraan::class, 'kendaraan_id');
     }
 
     public function mekanik()
     {
-        return $this->belongsTo(Mekanik::class);
+        return $this->belongsTo(Mekanik::class, 'mekanik_id');
     }
 
     public function spareParts()
