@@ -10,13 +10,16 @@ use Illuminate\Http\Request;
 class KendaraanController extends Controller
 {
     public function index()
-    {
+{
     $kendaraans = Kendaraan::with('user')
         ->whereHas('user.customer')
         ->latest()
         ->paginate(10);
-    return view('admin.kendaraan.index', compact('kendaraans'));
-    }
+
+    $customers = Customer::with('user')->orderBy('nama_lengkap')->get();
+
+    return view('admin.kendaraan.index', compact('kendaraans', 'customers'));
+}
 
     public function create()
     {
