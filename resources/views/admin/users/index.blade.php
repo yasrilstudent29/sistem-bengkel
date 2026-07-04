@@ -1,34 +1,34 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-extrabold text-3xl text-gray-900 leading-tight">
             Manajemen User
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div>
+        <div class="max-w-7xl">
 
             <x-alert />
 
-            <p class="text-gray-500 text-sm mb-6">
+            <p class="text-gray-500 text-base -mt-9 mb-6">
                 Kelola role dan akses seluruh pengguna sistem.
             </p>
 
             {{-- Summary Cards --}}
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+                <div class="bg-white rounded-xl border border-gray-300 shadow p-5">
                     <p class="text-gray-500 text-sm">Total User</p>
                     <p class="text-2xl font-bold text-gray-900 mt-1">{{ $totalUser }}</p>
                 </div>
-                <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+                <div class="bg-white rounded-xl border border-gray-300 shadow p-5">
                     <p class="text-gray-500 text-sm">Total Admin</p>
                     <p class="text-2xl font-bold text-gray-900 mt-1">{{ $totalAdmin }}</p>
                 </div>
-                <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+                <div class="bg-white rounded-xl border border-gray-300 shadow p-5">
                     <p class="text-gray-500 text-sm">Terverifikasi</p>
                     <p class="text-2xl font-bold text-green-600 mt-1">{{ $terverifikasi }}</p>
                 </div>
-                <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+                <div class="bg-white rounded-xl border border-gray-300 shadow p-5">
                     <p class="text-gray-500 text-sm">Belum Verifikasi</p>
                     <p class="text-2xl font-bold text-red-500 mt-1">{{ $belumTerverifikasi }}</p>
                 </div>
@@ -43,10 +43,10 @@
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                     <input type="text" id="searchUser" placeholder="Cari berdasarkan nama atau email..."
-                        class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-200">
+                        class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-200">
                 </div>
                 <select id="filterRole"
-                    class="border border-gray-200 rounded-lg text-sm px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-orange-200">
+                    class="border border-gray-300 rounded-lg text-sm px-4 py-2.5 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-200">
                     <option value="">Semua Role</option>
                     <option value="admin">Admin</option>
                     <option value="user">User</option>
@@ -54,7 +54,7 @@
             </div>
 
             {{-- Table --}}
-            <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
+            <div class="bg-white overflow-hidden shadow rounded-xl border border-gray-300">
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-100">
                         <thead class="bg-gray-50">

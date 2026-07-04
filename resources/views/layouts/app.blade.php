@@ -56,7 +56,7 @@
     </style>
 </head>
 
-<body class="font-sans antialiased bg-white">
+<body class="antialiased bg-white" style="font-family: 'Plus Jakarta Sans', sans-serif;">
 
     <div class="flex h-screen overflow-hidden">
 
@@ -258,7 +258,7 @@
             {{-- Page Content --}}
             <main class="flex-1 overflow-y-auto bg-white">
                 @isset($header)
-                    <div class="px-6 py-5 border-b border-gray-100">
+                    <div class="px-6 pt-6 pb-4">
                         {{ $header }}
                     </div>
                 @endisset

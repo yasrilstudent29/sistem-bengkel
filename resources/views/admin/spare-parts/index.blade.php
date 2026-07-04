@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-extrabold text-3xl text-gray-900 leading-tight">
                 Spare Part
             </h2>
             <a href="{{ route('admin.spare-parts.create') }}"
@@ -12,30 +12,30 @@
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div>
+        <div class="max-w-7xl">
 
             <x-alert />
 
-            <p class="text-gray-500 text-sm mb-6">
+            <p class="text-gray-500 text-base -mt-9 mb-6">
                 Kelola stok dan harga spare part bengkel Anda.
             </p>
 
             {{-- Summary Cards --}}
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+                <div class="bg-white rounded-xl border border-gray-300 shadow p-5">
                     <p class="text-gray-500 text-sm">Total Item</p>
                     <p class="text-2xl font-bold text-gray-900 mt-1">{{ $totalItem }}</p>
                 </div>
-                <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+                <div class="bg-white rounded-xl border border-gray-300 shadow p-5">
                     <p class="text-gray-500 text-sm">Stok Menipis</p>
                     <p class="text-2xl font-bold text-amber-600 mt-1">{{ $stokMenipis }}</p>
                 </div>
-                <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+                <div class="bg-white rounded-xl border border-gray-300 shadow p-5">
                     <p class="text-gray-500 text-sm">Stok Habis</p>
                     <p class="text-2xl font-bold text-red-600 mt-1">{{ $stokHabis }}</p>
                 </div>
-                <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+                <div class="bg-white rounded-xl border border-gray-300 shadow p-5">
                     <p class="text-gray-500 text-sm">Nilai Inventaris</p>
                     <p class="text-2xl font-bold text-gray-900 mt-1">Rp {{ number_format($nilaiInventaris, 0, ',', '.') }}</p>
                 </div>
@@ -49,11 +49,11 @@
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input type="text" id="searchSparePart" placeholder="Cari berdasarkan nama atau kode..."
-                    class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-200">
+                    class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-200">
             </div>
 
             {{-- Table --}}
-            <div class="bg-white overflow-hidden shadow-sm rounded-xl border border-gray-100">
+            <div class="bg-white overflow-hidden shadow rounded-xl border border-gray-300">
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-100">
                         <thead class="bg-gray-50">
