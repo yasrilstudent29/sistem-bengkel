@@ -66,6 +66,9 @@ Route::middleware(['auth', 'verified', 'admin'])
         // Struk PDF
         Route::get('/servis/{servis}/struk', [ServisController::class, 'struk'])->name('servis.struk');
 
+        // Update status cepat
+        Route::patch('/servis/{servis}/update-status', [ServisController::class, 'updateStatus'])->name('servis.update-status');
+
         // Manajemen Mekanik
         Route::resource('mekanik', MekanikController::class);
 
