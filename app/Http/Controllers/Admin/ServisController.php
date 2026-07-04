@@ -12,13 +12,33 @@ use Illuminate\Http\Request;
 
 class ServisController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $servis = Servis::with(['kendaraan.user', 'mekanik'])
-            ->latest()
-            ->paginate(10);
+    $status = $request->query('status');
 
-        return view('admin.servis.index', compact('servis'));
+    $query = Servis::with(['kendaraan.user', 'mekanik'])->latest();
+
+    if ($status && $status !== 'all') {
+        $query->where('status', $status);
+    }
+
+    $servis = $query->paginate(10)->withQueryString();
+
+    $countAll = Servis::count();
+    $countMenunggu = Servis::where('status', 'menunggu')->count();
+    $countProses = Servis::where('status', 'proses')->count();
+    $countSelesai = Servis::where('status', 'selesai')->count();
+    $countDiambil = Servis::where('status', 'diambil')->count();
+
+    return view('admin.servis.index', compact(
+        'servis',
+        'status',
+        'countAll',
+        'countMenunggu',
+        'countProses',
+        'countSelesai',
+        'countDiambil'
+    ));
     }
 
     public function create()
@@ -154,5 +174,18 @@ class ServisController extends Controller
     $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.servis.struk', compact('servis'));
 
     return $pdf->download('struk-servis-' . $servis->id . '.pdf');
+    }
+
+    public function updateStatus(Request $request, Servis $servis)
+    {
+    $validated = $request->validate([
+        'status' => ['required', 'in:menunggu,proses,selesai,diambil'],
+    ]);
+
+    $servis->update($validated);
+
+    return redirect()
+        ->route('admin.servis.index')
+        ->with('success', 'Status servis berhasil diperbarui.');
     }
 }
