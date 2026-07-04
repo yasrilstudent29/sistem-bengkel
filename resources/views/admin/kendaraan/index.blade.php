@@ -4,15 +4,15 @@
             <h2 class="font-extrabold text-3xl text-gray-900 leading-tight">
                 Kendaraan
             </h2>
-            <a href="{{ route('admin.kendaraan.create') }}"
+            <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-modal-kendaraan'))"
                 class="flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
                 style="background-color: #fa7c20;">
                 <span>+</span> Tambah Kendaraan
-            </a>
+            </button>
         </div>
     </x-slot>
 
-    <div>
+    <div x-data="{ showModal: {{ $errors->any() ? 'true' : 'false' }} }" x-on:open-modal-kendaraan.window="showModal = true">
         <div class="max-w-7xl">
 
             <x-alert />
@@ -57,7 +57,8 @@
                                     </div>
                                 @endif
                                 <div>
-                                    <p class="font-semibold text-gray-900 group-hover:text-orange-500 transition-colors">
+                                    <p
+                                        class="font-semibold text-gray-900 group-hover:text-orange-500 transition-colors">
                                         {{ $kendaraan->tahun }} {{ $kendaraan->merek }} {{ $kendaraan->model }}
                                     </p>
                                     <p class="text-xs text-gray-400">{{ $kendaraan->user->name }}</p>
@@ -123,6 +124,144 @@
                 </div>
             @endif
 
+        </div>
+
+        {{-- Modal Tambah Kendaraan --}}
+        <div x-show="showModal" x-cloak x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style="background-color: rgba(0,0,0,0.6);">
+            <div @click.outside="showModal = false" x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[92vh] overflow-y-auto">
+
+                <div class="p-5">
+                    <div class="flex items-start justify-between mb-1">
+                        <h3 class="font-extrabold text-lg text-gray-900">Tambah Kendaraan</h3>
+                        <button type="button" @click="showModal = false" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="text-gray-500 text-xs mb-4">Daftarkan kendaraan baru dan hubungkan ke pemiliknya.</p>
+
+                    <form action="{{ route('admin.kendaraan.store') }}" method="POST" class="space-y-3"
+                        enctype="multipart/form-data">
+                        @csrf
+
+                        <div>
+                            <x-input-label for="customer_id" value="Owner (Customer)" />
+                            <select id="customer_id" name="customer_id" required
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                                <option value="">-- Pilih Customer --</option>
+                                @foreach ($customers as $customer)
+                                    <option value="{{ $customer->id }}"
+                                        {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
+                                        {{ $customer->nama_lengkap }} — {{ $customer->user->email }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('customer_id')" class="mt-2" />
+                            @if ($customers->isEmpty())
+                                <p class="text-xs text-amber-600 mt-1">
+                                    Belum ada data customer. <a href="{{ route('admin.customers.create') }}"
+                                        class="underline">Tambah customer dulu</a>.
+                                </p>
+                            @endif
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <x-input-label for="merek" value="Merek (Make)" />
+                                <x-text-input id="merek" name="merek" type="text" class="block mt-1 w-full"
+                                    :value="old('merek')" required />
+                                <x-input-error :messages="$errors->get('merek')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="model" value="Model" />
+                                <x-text-input id="model" name="model" type="text" class="block mt-1 w-full"
+                                    :value="old('model')" required />
+                                <x-input-error :messages="$errors->get('model')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <div>
+                                <x-input-label for="tahun" value="Tahun" />
+                                <x-text-input id="tahun" name="tahun" type="number" min="1900"
+                                    :max="date('Y')" class="block mt-1 w-full" :value="old('tahun')" required />
+                                <x-input-error :messages="$errors->get('tahun')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="odometer" value="Odometer (km)" />
+                                <x-text-input id="odometer" name="odometer" type="number" min="0"
+                                    class="block mt-1 w-full" :value="old('odometer', 0)" />
+                                <x-input-error :messages="$errors->get('odometer')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="warna" value="Warna" />
+                                <x-text-input id="warna" name="warna" type="text" class="block mt-1 w-full"
+                                    :value="old('warna')" placeholder="Hitam" />
+                                <x-input-error :messages="$errors->get('warna')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <div>
+                                <x-input-label for="jenis" value="Jenis Kendaraan" />
+                                <select id="jenis" name="jenis" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                                    <option value="motor" {{ old('jenis') === 'motor' ? 'selected' : '' }}>Motor
+                                    </option>
+                                    <option value="mobil" {{ old('jenis') === 'mobil' ? 'selected' : '' }}>Mobil
+                                    </option>
+                                </select>
+                                <x-input-error :messages="$errors->get('jenis')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="plat_nomor" value="Plat Nomor" />
+                                <x-text-input id="plat_nomor" name="plat_nomor" type="text"
+                                    class="block mt-1 w-full" :value="old('plat_nomor')" required />
+                                <x-input-error :messages="$errors->get('plat_nomor')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="vin" value="VIN (opsional)" />
+                                <x-text-input id="vin" name="vin" type="text" class="block mt-1 w-full"
+                                    :value="old('vin')" placeholder="17-character VIN" />
+                                <x-input-error :messages="$errors->get('vin')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <x-input-label for="foto" value="Foto Kendaraan (opsional)" />
+                            <input id="foto" name="foto" type="file" accept="image/*"
+                                class="mt-1 block w-full text-sm text-gray-500
+                                file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0
+                                file:text-sm file:font-semibold file:text-white
+                                hover:file:opacity-90 cursor-pointer"
+                                style="--file-bg: #fa7c20;">
+                            <x-input-error :messages="$errors->get('foto')" class="mt-2" />
+                        </div>
+
+                        <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+                            <button type="button" @click="showModal = false"
+                                class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                class="px-6 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
+                                style="background-color: #183356;">
+                                Save vehicle
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
