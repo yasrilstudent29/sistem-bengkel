@@ -1,23 +1,23 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Vehicles
+            <h2 class="font-extrabold text-3xl text-gray-900 leading-tight">
+                Kendaraan
             </h2>
             <a href="{{ route('admin.kendaraan.create') }}"
                 class="flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
                 style="background-color: #fa7c20;">
-                <span>+</span> Add vehicle
+                <span>+</span> Tambah Kendaraan
             </a>
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div>
+        <div class="max-w-7xl">
 
             <x-alert />
 
-            <p class="text-gray-500 text-sm mb-6">
+            <p class="text-gray-500 text-base -mt-9 mb-6">
                 Seluruh kendaraan dari setiap customer yang terdaftar.
             </p>
 
@@ -29,13 +29,13 @@
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 <input type="text" id="searchKendaraan" placeholder="Cari berdasarkan plat, merek, atau model..."
-                    class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-200">
+                    class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-200">
             </div>
 
             {{-- Card Grid --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="kendaraanGrid">
                 @forelse ($kendaraans as $kendaraan)
-                    <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-5 kendaraan-card"
+                    <div class="group bg-white rounded-xl border border-gray-300 shadow p-5 kendaraan-card hover:border-orange-400 transition-colors"
                         data-plat="{{ strtolower($kendaraan->plat_nomor) }}"
                         data-merek="{{ strtolower($kendaraan->merek) }}"
                         data-model="{{ strtolower($kendaraan->model) }}">
@@ -57,7 +57,7 @@
                                     </div>
                                 @endif
                                 <div>
-                                    <p class="font-semibold text-gray-900">
+                                    <p class="font-semibold text-gray-900 group-hover:text-orange-500 transition-colors">
                                         {{ $kendaraan->tahun }} {{ $kendaraan->merek }} {{ $kendaraan->model }}
                                     </p>
                                     <p class="text-xs text-gray-400">{{ $kendaraan->user->name }}</p>
@@ -102,10 +102,13 @@
                             </div>
                         </div>
 
-                        <a href="{{ route('admin.kendaraan.show', $kendaraan) }}"
-                            class="mt-4 block text-center w-full py-2 rounded-lg border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition">
-                            View details
-                        </a>
+                        <div class="mt-4 flex justify-end">
+                            <a href="{{ route('admin.kendaraan.show', $kendaraan) }}"
+                                class="px-5 py-2 rounded-lg text-white text-sm font-semibold hover:opacity-90 transition"
+                                style="background-color: #183356;">
+                                View details
+                            </a>
+                        </div>
                     </div>
                 @empty
                     <div class="col-span-full text-center text-gray-500 py-12">
