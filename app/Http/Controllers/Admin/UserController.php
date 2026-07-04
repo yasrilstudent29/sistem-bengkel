@@ -11,7 +11,19 @@ class UserController extends Controller
     public function index()
     {
         $users = User::latest()->paginate(10);
-        return view('admin.users.index', compact('users'));
+
+        $totalUser = User::where('role', 'user')->count();
+        $totalAdmin = User::where('role', 'admin')->count();
+        $terverifikasi = User::whereNotNull('email_verified_at')->count();
+        $belumTerverifikasi = User::whereNull('email_verified_at')->count();
+
+        return view('admin.users.index', compact(
+        'users',
+        'totalUser',
+        'totalAdmin',
+        'terverifikasi',
+        'belumTerverifikasi'
+        ));
     }
 
     public function edit(User $user)
