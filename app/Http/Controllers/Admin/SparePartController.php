@@ -11,7 +11,19 @@ class SparePartController extends Controller
     public function index()
     {
         $spareParts = SparePart::latest()->paginate(10);
-        return view('admin.spare-parts.index', compact('spareParts'));
+
+        $totalItem = SparePart::count();
+        $stokMenipis = SparePart::where('stok', '>', 0)->where('stok', '<=', 5)->count();
+        $stokHabis = SparePart::where('stok', 0)->count();
+        $nilaiInventaris = SparePart::sum(\DB::raw('stok * harga'));
+
+        return view('admin.spare-parts.index', compact(
+        'spareParts',
+        'totalItem',
+        'stokMenipis',
+        'stokHabis',
+        'nilaiInventaris'
+        ));
     }
 
     public function create()
