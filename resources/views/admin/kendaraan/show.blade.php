@@ -1,13 +1,13 @@
 <x-app-layout>
     <x-slot name="header">
         <a href="{{ route('admin.kendaraan.index') }}"
-            class="text-sm text-gray-600 hover:underline flex items-center gap-1">
+            class="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-3 py-1.5 rounded-lg transition -ml-3">
             ← Back to vehicles
         </a>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div x-data="{ showEditModal: {{ $errors->any() ? 'true' : 'false' }} }" class="-mt-9">
+        <div class="max-w-6xl space-y-6">
 
             <x-alert />
 
@@ -29,10 +29,10 @@
                         </div>
                     @endif
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-900">
+                        <h2 class="font-extrabold text-3xl text-gray-900 leading-tight">
                             {{ $kendaraan->tahun }} {{ $kendaraan->merek }} {{ $kendaraan->model }}
                         </h2>
-                        <p class="text-gray-500 text-sm">
+                        <p class="text-gray-500 text-base mt-0.5">
                             Plat <span class="font-medium">{{ $kendaraan->plat_nomor }}</span>
                             @if ($kendaraan->warna)
                                 — {{ $kendaraan->warna }}
@@ -42,10 +42,10 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('admin.kendaraan.edit', $kendaraan) }}"
-                        class="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-200 bg-white text-gray-700 text-sm font-medium hover:bg-gray-50 transition">
+                    <button type="button" @click="showEditModal = true"
+                        class="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 text-sm font-medium hover:border-orange-400 hover:text-orange-600 transition">
                         Edit vehicle
-                    </a>
+                    </button>
                     <a href="{{ route('admin.servis.create') }}"
                         class="flex items-center gap-1.5 px-3 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
                         style="background-color: #fa7c20;">
@@ -57,7 +57,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
                 {{-- Vehicle Details --}}
-                <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+                <div class="bg-white rounded-xl border border-gray-300 shadow p-6">
                     <h3 class="font-bold text-gray-900 mb-4">Vehicle details</h3>
                     <div class="space-y-3 text-sm">
                         <div class="flex items-center justify-between">
@@ -98,7 +98,7 @@
                 </div>
 
                 {{-- Owner --}}
-                <div class="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+                <div class="bg-white rounded-xl border border-gray-300 shadow p-6">
                     <h3 class="font-bold text-gray-900 mb-4">Owner</h3>
                     @if ($kendaraan->user->customer)
                         <a href="{{ route('admin.customers.show', $kendaraan->user->customer) }}"
@@ -121,8 +121,12 @@
             </div>
 
             {{-- Servis Berjalan --}}
-            <div class="bg-white rounded-xl border border-gray-100 shadow-sm">
-                <div class="px-6 py-4 border-b border-gray-100">
+            <div class="bg-white rounded-xl border border-gray-300 shadow">
+                <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
                     <h3 class="font-bold text-gray-900">Servis Berjalan</h3>
                 </div>
                 <div class="divide-y divide-gray-50">
@@ -154,8 +158,12 @@
             </div>
 
             {{-- Riwayat Servis --}}
-            <div class="bg-white rounded-xl border border-gray-100 shadow-sm">
-                <div class="px-6 py-4 border-b border-gray-100">
+            <div class="bg-white rounded-xl border border-gray-300 shadow">
+                <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
                     <h3 class="font-bold text-gray-900">Riwayat Servis</h3>
                 </div>
                 <div class="divide-y divide-gray-50">
@@ -182,5 +190,147 @@
             </div>
 
         </div>
+
+        {{-- Modal Edit Kendaraan --}}
+        <div x-show="showEditModal" x-cloak x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style="background-color: rgba(0,0,0,0.6);">
+            <div @click.outside="showEditModal = false" x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+
+                <div class="p-5 overflow-y-auto flex-1">
+                    <div class="flex items-start justify-between mb-1">
+                        <h3 class="font-extrabold text-lg text-gray-900">Edit Kendaraan</h3>
+                        <button type="button" @click="showEditModal = false"
+                            class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="text-gray-500 text-xs mb-4">Perbarui data kendaraan ini.</p>
+
+                    <form action="{{ route('admin.kendaraan.update', $kendaraan) }}" method="POST"
+                        class="space-y-3" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+
+                        <div>
+                            <x-input-label for="edit_customer_id" value="Owner (Customer)" />
+                            <select id="edit_customer_id" name="customer_id" required
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                                <option value="">-- Pilih Customer --</option>
+                                @foreach ($customers as $customer)
+                                    <option value="{{ $customer->id }}"
+                                        {{ old('customer_id', $kendaraan->user->customer->id ?? '') == $customer->id ? 'selected' : '' }}>
+                                        {{ $customer->nama_lengkap }} — {{ $customer->user->email }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('customer_id')" class="mt-2" />
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <x-input-label for="edit_merek" value="Merek (Make)" />
+                                <x-text-input id="edit_merek" name="merek" type="text"
+                                    class="block mt-1 w-full" :value="old('merek', $kendaraan->merek)" required />
+                                <x-input-error :messages="$errors->get('merek')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="edit_model" value="Model" />
+                                <x-text-input id="edit_model" name="model" type="text"
+                                    class="block mt-1 w-full" :value="old('model', $kendaraan->model)" required />
+                                <x-input-error :messages="$errors->get('model')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <div>
+                                <x-input-label for="edit_tahun" value="Tahun" />
+                                <x-text-input id="edit_tahun" name="tahun" type="number" min="1900"
+                                    :max="date('Y')" class="block mt-1 w-full" :value="old('tahun', $kendaraan->tahun)" required />
+                                <x-input-error :messages="$errors->get('tahun')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="edit_odometer" value="Odometer (km)" />
+                                <x-text-input id="edit_odometer" name="odometer" type="number" min="0"
+                                    class="block mt-1 w-full" :value="old('odometer', $kendaraan->odometer)" />
+                                <x-input-error :messages="$errors->get('odometer')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="edit_warna" value="Warna" />
+                                <x-text-input id="edit_warna" name="warna" type="text"
+                                    class="block mt-1 w-full" :value="old('warna', $kendaraan->warna)" placeholder="Hitam" />
+                                <x-input-error :messages="$errors->get('warna')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <div>
+                                <x-input-label for="edit_jenis" value="Jenis Kendaraan" />
+                                <select id="edit_jenis" name="jenis" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                                    <option value="motor"
+                                        {{ old('jenis', $kendaraan->jenis) === 'motor' ? 'selected' : '' }}>Motor
+                                    </option>
+                                    <option value="mobil"
+                                        {{ old('jenis', $kendaraan->jenis) === 'mobil' ? 'selected' : '' }}>Mobil
+                                    </option>
+                                </select>
+                                <x-input-error :messages="$errors->get('jenis')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="edit_plat_nomor" value="Plat Nomor" />
+                                <x-text-input id="edit_plat_nomor" name="plat_nomor" type="text"
+                                    class="block mt-1 w-full" :value="old('plat_nomor', $kendaraan->plat_nomor)" required />
+                                <x-input-error :messages="$errors->get('plat_nomor')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="edit_vin" value="VIN (opsional)" />
+                                <x-text-input id="edit_vin" name="vin" type="text" class="block mt-1 w-full"
+                                    :value="old('vin', $kendaraan->vin)" placeholder="17-character VIN" />
+                                <x-input-error :messages="$errors->get('vin')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <x-input-label for="edit_foto" value="Foto Kendaraan" />
+                            @if ($kendaraan->foto)
+                                <div class="mt-1 mb-2">
+                                    <img src="{{ Storage::url($kendaraan->foto) }}" alt="Foto Kendaraan"
+                                        class="w-24 h-20 object-cover rounded-lg border border-gray-200">
+                                </div>
+                            @endif
+                            <input id="edit_foto" name="foto" type="file" accept="image/*"
+                                class="mt-1 block w-full text-sm text-gray-500
+                                file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0
+                                file:text-sm file:font-semibold file:text-white
+                                hover:file:opacity-90 cursor-pointer">
+                            <x-input-error :messages="$errors->get('foto')" class="mt-2" />
+                        </div>
+
+                        <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+                            <button type="button" @click="showEditModal = false"
+                                class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                class="px-6 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
+                                style="background-color: #183356;">
+                                Save changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
 </x-app-layout>

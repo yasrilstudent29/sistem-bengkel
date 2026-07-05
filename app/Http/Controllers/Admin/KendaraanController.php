@@ -73,22 +73,24 @@ class KendaraanController extends Controller
 
     public function show(Kendaraan $kendaraan)
     {
-        $kendaraan->load('user.customer');
+    $kendaraan->load('user.customer');
 
-        $servisBerjalan = $kendaraan->servis()
-            ->whereIn('status', ['menunggu', 'proses'])
-            ->with('mekanik')
-            ->latest()
-            ->get();
+    $servisBerjalan = $kendaraan->servis()
+        ->whereIn('status', ['menunggu', 'proses'])
+        ->with('mekanik')
+        ->latest()
+        ->get();
 
-        $riwayatServis = $kendaraan->servis()
-            ->whereIn('status', ['selesai', 'diambil'])
-            ->with('mekanik')
-            ->latest()
-            ->take(10)
-            ->get();
+    $riwayatServis = $kendaraan->servis()
+        ->whereIn('status', ['selesai', 'diambil'])
+        ->with('mekanik')
+        ->latest()
+        ->take(10)
+        ->get();
 
-        return view('admin.kendaraan.show', compact('kendaraan', 'servisBerjalan', 'riwayatServis'));
+    $customers = Customer::with('user')->orderBy('nama_lengkap')->get();
+
+    return view('admin.kendaraan.show', compact('kendaraan', 'servisBerjalan', 'riwayatServis', 'customers'));
     }
 
     public function edit(Kendaraan $kendaraan)

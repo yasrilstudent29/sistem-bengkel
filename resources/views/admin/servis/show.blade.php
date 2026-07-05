@@ -5,7 +5,7 @@
         </a>
     </x-slot>
 
-    <div>
+    <div class="-mt-8">
         <div class="max-w-6xl space-y-6">
 
             <x-alert />
