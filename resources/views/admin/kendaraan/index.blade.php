@@ -12,7 +12,7 @@
         </div>
     </x-slot>
 
-    <div x-data="{ showModal: {{ $errors->any() ? 'true' : 'false' }} }" x-on:open-modal-kendaraan.window="showModal = true">
+    <div x-data="{ showModal: {{ $errors->any() || request('open_modal') ? 'true' : 'false' }} }" x-on:open-modal-kendaraan.window="showModal = true">
         <div class="max-w-7xl">
 
             <x-alert />
@@ -161,7 +161,7 @@
                                 <option value="">-- Pilih Customer --</option>
                                 @foreach ($customers as $customer)
                                     <option value="{{ $customer->id }}"
-                                        {{ old('customer_id') == $customer->id ? 'selected' : '' }}>
+                                        {{ old('customer_id', request('customer_id')) == $customer->id ? 'selected' : '' }}>
                                         {{ $customer->nama_lengkap }} — {{ $customer->user->email }}
                                     </option>
                                 @endforeach

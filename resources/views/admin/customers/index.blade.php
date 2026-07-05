@@ -4,15 +4,15 @@
             <h2 class="font-extrabold text-3xl text-gray-900 leading-tight">
                 Customers
             </h2>
-            <a href="{{ route('admin.customers.create') }}"
+            <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-modal-customer'))"
                 class="flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
                 style="background-color: #fa7c20;">
                 <span>+</span> Add customer
-            </a>
+            </button>
         </div>
     </x-slot>
 
-    <div>
+    <div x-data="{ showModal: {{ $errors->any() ? 'true' : 'false' }} }" x-on:open-modal-customer.window="showModal = true">
         <div class="max-w-7xl">
 
             <x-alert />
@@ -104,6 +104,87 @@
             @endif
 
         </div>
+
+        {{-- Modal Tambah Customer --}}
+        <div x-show="showModal" x-cloak x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style="background-color: rgba(0,0,0,0.6);">
+            <div @click.outside="showModal = false" x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="bg-white rounded-2xl shadow-xl w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden">
+
+                <div class="p-5 overflow-y-auto flex-1">
+                    <div class="flex items-start justify-between mb-1">
+                        <h3 class="font-extrabold text-lg text-gray-900">Tambah Customer</h3>
+                        <button type="button" @click="showModal = false" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="text-gray-500 text-xs mb-4">Daftarkan data customer dari user yang sudah terdaftar.</p>
+
+                    <form action="{{ route('admin.customers.store') }}" method="POST" class="space-y-3">
+                        @csrf
+
+                        <div>
+                            <x-input-label for="user_id" value="Email User Terdaftar" />
+                            <select id="user_id" name="user_id" required
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200"
+                                onchange="isiNamaCustomer(this)">
+                                <option value="">-- Pilih Email --</option>
+                                @foreach ($users as $user)
+                                    <option value="{{ $user->id }}" data-name="{{ $user->name }}"
+                                        {{ old('user_id') == $user->id ? 'selected' : '' }}>
+                                        {{ $user->email }} — {{ $user->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('user_id')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="nama_lengkap" value="Nama Lengkap" />
+                            <x-text-input id="nama_lengkap" name="nama_lengkap" type="text"
+                                class="block mt-1 w-full" :value="old('nama_lengkap')" required />
+                            <x-input-error :messages="$errors->get('nama_lengkap')" class="mt-2" />
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <x-input-label for="no_telepon" value="No. Telepon" />
+                                <x-text-input id="no_telepon" name="no_telepon" type="text"
+                                    class="block mt-1 w-full" :value="old('no_telepon')" />
+                                <x-input-error :messages="$errors->get('no_telepon')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="alamat" value="Alamat (Kota/Wilayah)" />
+                                <x-text-input id="alamat" name="alamat" type="text" class="block mt-1 w-full"
+                                    :value="old('alamat')" placeholder="Contoh: Ngawi" />
+                                <x-input-error :messages="$errors->get('alamat')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+                            <button type="button" @click="showModal = false"
+                                class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                class="px-6 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
+                                style="background-color: #183356;">
+                                Save customer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -122,5 +203,13 @@
                 }
             });
         });
+
+        function isiNamaCustomer(select) {
+            const option = select.options[select.selectedIndex];
+            const nama = option.getAttribute('data-name');
+            if (nama) {
+                document.getElementById('nama_lengkap').value = nama;
+            }
+        }
     </script>
 </x-app-layout>

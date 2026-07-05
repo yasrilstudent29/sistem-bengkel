@@ -11,35 +11,41 @@ class CustomerController extends Controller
 {
     public function index()
     {
-        $customers = Customer::with('user')->latest()->paginate(10);
-        return view('admin.customers.index', compact('customers'));
+    $customers = Customer::with('user')->latest()->paginate(10);
+
+    $users = User::where('role', 'user')
+        ->whereDoesntHave('customer')
+        ->orderBy('name')
+        ->get();
+
+    return view('admin.customers.index', compact('customers', 'users'));
     }
 
     public function show(Customer $customer)
     {
-        $customer->load('user');
+    $customer->load('user');
 
-        $kendaraans = \App\Models\Kendaraan::where('user_id', $customer->user_id)
-            ->withCount('servis')
-            ->latest()
-            ->get();
+    $kendaraans = \App\Models\Kendaraan::where('user_id', $customer->user_id)
+        ->withCount('servis')
+        ->latest()
+        ->get();
 
-        $servisBerjalan = \App\Models\Servis::whereHas('kendaraan', function ($q) use ($customer) {
-            $q->where('user_id', $customer->user_id);
-        })->whereIn('status', ['menunggu', 'proses'])
-            ->with(['kendaraan', 'mekanik'])
-            ->latest()
-            ->get();
+    $servisBerjalan = \App\Models\Servis::whereHas('kendaraan', function ($q) use ($customer) {
+        $q->where('user_id', $customer->user_id);
+    })->whereIn('status', ['menunggu', 'proses'])
+        ->with(['kendaraan', 'mekanik'])
+        ->latest()
+        ->get();
 
-        $riwayatServis = \App\Models\Servis::whereHas('kendaraan', function ($q) use ($customer) {
-            $q->where('user_id', $customer->user_id);
-        })->whereIn('status', ['selesai', 'diambil'])
-            ->with(['kendaraan', 'mekanik'])
-            ->latest()
-            ->take(10)
-            ->get();
+    $riwayatServis = \App\Models\Servis::whereHas('kendaraan', function ($q) use ($customer) {
+        $q->where('user_id', $customer->user_id);
+    })->whereIn('status', ['selesai', 'diambil'])
+        ->with(['kendaraan', 'mekanik'])
+        ->latest()
+        ->take(10)
+        ->get();
 
-        return view('admin.customers.show', compact('customer', 'kendaraans', 'servisBerjalan', 'riwayatServis'));
+    return view('admin.customers.show', compact('customer', 'kendaraans', 'servisBerjalan', 'riwayatServis'));
     }
 
     public function create()
