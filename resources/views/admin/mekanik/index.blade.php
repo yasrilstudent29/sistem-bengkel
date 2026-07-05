@@ -4,15 +4,15 @@
             <h2 class="font-extrabold text-3xl text-gray-900 leading-tight">
                 Mekanik
             </h2>
-            <a href="{{ route('admin.mekanik.create') }}"
+            <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-modal-mekanik'))"
                 class="flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
                 style="background-color: #fa7c20;">
                 <span>+</span> Tambah Mekanik
-            </a>
+            </button>
         </div>
     </x-slot>
 
-    <div>
+    <div x-data="{ showModal: {{ $errors->any() && !old('_edit_id') ? 'true' : 'false' }}, showEditModal: {{ $errors->any() && old('_edit_id') ? 'true' : 'false' }}, editData: {} }" x-on:open-modal-mekanik.window="showModal = true">
         <div class="max-w-7xl">
 
             <x-alert />
@@ -91,10 +91,18 @@
                         </div>
 
                         <div class="mt-4 flex items-center gap-2">
-                            <a href="{{ route('admin.mekanik.edit', $mekanik) }}"
+                            <button type="button"
+                                @click="editData = {
+                                    id: {{ $mekanik->id }},
+                                    nama: @js($mekanik->nama),
+                                    no_telepon: @js($mekanik->no_telepon),
+                                    spesialisasi: @js($mekanik->spesialisasi),
+                                    status: @js($mekanik->status),
+                                    updateUrl: @js(route('admin.mekanik.update', $mekanik))
+                                }; showEditModal = true"
                                 class="flex-1 text-center py-2 rounded-lg border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 transition">
                                 Edit
-                            </a>
+                            </button>
                             <form action="{{ route('admin.mekanik.destroy', $mekanik) }}" method="POST" class="flex-1"
                                 onsubmit="return confirm('Yakin ingin menghapus mekanik ini?')">
                                 @csrf
@@ -119,6 +127,158 @@
                 </div>
             @endif
 
+        </div>
+
+        {{-- Modal Tambah Mekanik --}}
+        <div x-show="showModal" x-cloak x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style="background-color: rgba(0,0,0,0.6);">
+            <div @click.outside="showModal = false" x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden">
+
+                <div class="p-5 overflow-y-auto flex-1">
+                    <div class="flex items-start justify-between mb-1">
+                        <h3 class="font-extrabold text-lg text-gray-900">Tambah Mekanik</h3>
+                        <button type="button" @click="showModal = false" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="text-gray-500 text-xs mb-4">Tambahkan mekanik baru ke bengkel Anda.</p>
+
+                    <form action="{{ route('admin.mekanik.store') }}" method="POST" class="space-y-3">
+                        @csrf
+
+                        <div>
+                            <x-input-label for="nama" value="Nama Mekanik" />
+                            <x-text-input id="nama" name="nama" type="text" class="block mt-1 w-full"
+                                :value="old('nama')" required />
+                            <x-input-error :messages="$errors->get('nama')" class="mt-2" />
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <x-input-label for="no_telepon" value="Nomor Telepon" />
+                                <x-text-input id="no_telepon" name="no_telepon" type="text"
+                                    class="block mt-1 w-full" :value="old('no_telepon')" required />
+                                <x-input-error :messages="$errors->get('no_telepon')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="spesialisasi" value="Spesialisasi" />
+                                <x-text-input id="spesialisasi" name="spesialisasi" type="text"
+                                    class="block mt-1 w-full" :value="old('spesialisasi')" placeholder="Motor / Mobil" />
+                                <x-input-error :messages="$errors->get('spesialisasi')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <x-input-label for="status" value="Status" />
+                            <select id="status" name="status"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                                <option value="aktif" {{ old('status') === 'aktif' ? 'selected' : '' }}>Aktif
+                                </option>
+                                <option value="nonaktif" {{ old('status') === 'nonaktif' ? 'selected' : '' }}>Nonaktif
+                                </option>
+                            </select>
+                            <x-input-error :messages="$errors->get('status')" class="mt-2" />
+                        </div>
+
+                        <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+                            <button type="button" @click="showModal = false"
+                                class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                class="px-6 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
+                                style="background-color: #183356;">
+                                Save mekanik
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- Modal Edit Mekanik (shared) --}}
+        <div x-show="showEditModal" x-cloak x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style="background-color: rgba(0,0,0,0.6);">
+            <div @click.outside="showEditModal = false" x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden">
+
+                <div class="p-5 overflow-y-auto flex-1">
+                    <div class="flex items-start justify-between mb-1">
+                        <h3 class="font-extrabold text-lg text-gray-900">Edit Mekanik</h3>
+                        <button type="button" @click="showEditModal = false"
+                            class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="text-gray-500 text-xs mb-4">Perbarui data mekanik ini.</p>
+
+                    <form :action="editData.updateUrl" method="POST" class="space-y-3">
+                        @csrf
+                        @method('PUT')
+
+                        <div>
+                            <x-input-label for="edit_nama" value="Nama Mekanik" />
+                            <input id="edit_nama" name="nama" type="text" x-model="editData.nama" required
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <x-input-label for="edit_no_telepon" value="Nomor Telepon" />
+                                <input id="edit_no_telepon" name="no_telepon" type="text"
+                                    x-model="editData.no_telepon" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                            </div>
+                            <div>
+                                <x-input-label for="edit_spesialisasi" value="Spesialisasi" />
+                                <input id="edit_spesialisasi" name="spesialisasi" type="text"
+                                    x-model="editData.spesialisasi"
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                            </div>
+                        </div>
+
+                        <div>
+                            <x-input-label for="edit_status" value="Status" />
+                            <select id="edit_status" name="status" x-model="editData.status"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                                <option value="aktif">Aktif</option>
+                                <option value="nonaktif">Nonaktif</option>
+                            </select>
+                        </div>
+
+                        <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+                            <button type="button" @click="showEditModal = false"
+                                class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                class="px-6 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
+                                style="background-color: #183356;">
+                                Save changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
