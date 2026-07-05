@@ -30,6 +30,16 @@ class ServisController extends Controller
     $countSelesai = Servis::where('status', 'selesai')->count();
     $countDiambil = Servis::where('status', 'diambil')->count();
 
+    $kendaraans = Kendaraan::with('user')->whereHas('user.customer')->get();
+
+    $mekaniks = Mekanik::where('status', 'aktif')
+        ->whereDoesntHave('servis', function ($q) {
+            $q->whereIn('status', ['menunggu', 'proses']);
+        })
+        ->get();
+
+    $spareParts = SparePart::where('stok', '>', 0)->get();
+
     return view('admin.servis.index', compact(
         'servis',
         'status',
@@ -37,7 +47,10 @@ class ServisController extends Controller
         'countMenunggu',
         'countProses',
         'countSelesai',
-        'countDiambil'
+        'countDiambil',
+        'kendaraans',
+        'mekaniks',
+        'spareParts'
     ));
     }
 
@@ -110,8 +123,19 @@ class ServisController extends Controller
 
     public function show(Servis $servis)
     {
-        $servis->load(['kendaraan.user', 'mekanik', 'spareParts']);
-        return view('admin.servis.show', compact('servis'));
+    $servis->load(['kendaraan.user.customer', 'mekanik', 'spareParts']);
+
+    $kendaraans = Kendaraan::with('user')->whereHas('user.customer')->get();
+
+    $mekaniks = Mekanik::where('status', 'aktif')
+        ->where(function ($q) use ($servis) {
+            $q->whereDoesntHave('servis', function ($sub) {
+                $sub->whereIn('status', ['menunggu', 'proses']);
+            })->orWhere('id', $servis->mekanik_id);
+        })
+        ->get();
+
+    return view('admin.servis.show', compact('servis', 'kendaraans', 'mekaniks'));
     }
 
     public function edit(Servis $servis)

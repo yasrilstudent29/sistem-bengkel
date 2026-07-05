@@ -46,7 +46,7 @@
                         class="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 text-sm font-medium hover:border-orange-400 hover:text-orange-600 transition">
                         Edit vehicle
                     </button>
-                    <a href="{{ route('admin.servis.create') }}"
+                    <a href="{{ route('admin.servis.index', ['open_modal' => 1, 'kendaraan_id' => $kendaraan->id]) }}"
                         class="flex items-center gap-1.5 px-3 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
                         style="background-color: #fa7c20;">
                         + New job

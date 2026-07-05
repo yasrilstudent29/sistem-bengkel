@@ -1,11 +1,12 @@
 <x-app-layout>
     <x-slot name="header">
-        <a href="{{ route('admin.servis.index') }}" class="text-sm text-gray-600 hover:underline flex items-center gap-1">
+        <a href="{{ route('admin.servis.index') }}"
+            class="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-3 py-1.5 rounded-lg transition -ml-3">
             ← Back to jobs
         </a>
     </x-slot>
 
-    <div class="-mt-8">
+    <div x-data="{ showEditModal: {{ $errors->any() ? 'true' : 'false' }} }" class="-mt-8">
         <div class="max-w-6xl space-y-6">
 
             <x-alert />
@@ -42,10 +43,10 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('admin.servis.edit', $servis) }}"
-                        class="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 text-sm font-medium hover:bg-gray-50 transition">
+                    <button type="button" @click="showEditModal = true"
+                        class="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 text-sm font-medium hover:border-orange-400 hover:text-orange-600 transition">
                         Edit job
-                    </a>
+                    </button>
                     <a href="{{ route('admin.servis.struk', $servis) }}"
                         class="flex items-center gap-1.5 px-3 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
                         style="background-color: #fa7c20;">
@@ -197,5 +198,136 @@
             </div>
 
         </div>
+
+        {{-- Modal Edit Servis --}}
+        <div x-show="showEditModal" x-cloak x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style="background-color: rgba(0,0,0,0.6);">
+            <div @click.outside="showEditModal = false" x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+
+                <div class="p-5 overflow-y-auto flex-1">
+                    <div class="flex items-start justify-between mb-1">
+                        <h3 class="font-extrabold text-lg text-gray-900">Edit Job</h3>
+                        <button type="button" @click="showEditModal = false"
+                            class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="text-gray-500 text-xs mb-4">Perbarui data servis ini.</p>
+
+                    <form action="{{ route('admin.servis.update', $servis) }}" method="POST" class="space-y-3">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <x-input-label for="edit_kendaraan_id" value="Kendaraan" />
+                                <select id="edit_kendaraan_id" name="kendaraan_id" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                                    @foreach ($kendaraans as $kendaraan)
+                                        <option value="{{ $kendaraan->id }}"
+                                            {{ old('kendaraan_id', $servis->kendaraan_id) == $kendaraan->id ? 'selected' : '' }}>
+                                            {{ $kendaraan->tahun }} {{ $kendaraan->merek }} {{ $kendaraan->model }}
+                                            ({{ $kendaraan->plat_nomor }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <x-input-error :messages="$errors->get('kendaraan_id')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="edit_mekanik_id" value="Mekanik" />
+                                <select id="edit_mekanik_id" name="mekanik_id" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                                    @foreach ($mekaniks as $mekanik)
+                                        <option value="{{ $mekanik->id }}"
+                                            {{ old('mekanik_id', $servis->mekanik_id) == $mekanik->id ? 'selected' : '' }}>
+                                            {{ $mekanik->nama }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <x-input-error :messages="$errors->get('mekanik_id')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <div>
+                                <x-input-label for="edit_tanggal_masuk" value="Tanggal Masuk" />
+                                <x-text-input id="edit_tanggal_masuk" name="tanggal_masuk" type="date"
+                                    class="block mt-1 w-full" :value="old('tanggal_masuk', $servis->tanggal_masuk->format('Y-m-d'))" required />
+                                <x-input-error :messages="$errors->get('tanggal_masuk')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="edit_tanggal_selesai" value="Tanggal Selesai" />
+                                <x-text-input id="edit_tanggal_selesai" name="tanggal_selesai" type="date"
+                                    class="block mt-1 w-full" :value="old('tanggal_selesai', $servis->tanggal_selesai?->format('Y-m-d'))" />
+                                <x-input-error :messages="$errors->get('tanggal_selesai')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="edit_status" value="Status" />
+                                <select id="edit_status" name="status" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                                    <option value="menunggu"
+                                        {{ old('status', $servis->status) === 'menunggu' ? 'selected' : '' }}>Menunggu
+                                    </option>
+                                    <option value="proses"
+                                        {{ old('status', $servis->status) === 'proses' ? 'selected' : '' }}>Proses
+                                    </option>
+                                    <option value="selesai"
+                                        {{ old('status', $servis->status) === 'selesai' ? 'selected' : '' }}>Selesai
+                                    </option>
+                                    <option value="diambil"
+                                        {{ old('status', $servis->status) === 'diambil' ? 'selected' : '' }}>Diambil
+                                    </option>
+                                </select>
+                                <x-input-error :messages="$errors->get('status')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <x-input-label for="edit_keluhan" value="Keluhan" />
+                            <textarea id="edit_keluhan" name="keluhan" rows="2" required
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">{{ old('keluhan', $servis->keluhan) }}</textarea>
+                            <x-input-error :messages="$errors->get('keluhan')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="edit_catatan_mekanik" value="Catatan Mekanik" />
+                            <textarea id="edit_catatan_mekanik" name="catatan_mekanik" rows="2"
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">{{ old('catatan_mekanik', $servis->catatan_mekanik) }}</textarea>
+                            <x-input-error :messages="$errors->get('catatan_mekanik')" class="mt-2" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="edit_total_biaya" value="Total Biaya (Rp)" />
+                            <x-text-input id="edit_total_biaya" name="total_biaya" type="number" min="0"
+                                class="block mt-1 w-full" :value="old('total_biaya', $servis->total_biaya)" required />
+                            <x-input-error :messages="$errors->get('total_biaya')" class="mt-2" />
+                        </div>
+
+                        <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+                            <button type="button" @click="showEditModal = false"
+                                class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                class="px-6 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
+                                style="background-color: #183356;">
+                                Save changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     </div>
 </x-app-layout>
