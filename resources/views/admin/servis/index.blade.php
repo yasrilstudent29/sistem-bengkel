@@ -4,15 +4,15 @@
             <h2 class="font-extrabold text-3xl text-gray-900 leading-tight">
                 Repair Jobs
             </h2>
-            <a href="{{ route('admin.servis.create') }}"
+            <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-modal-servis'))"
                 class="flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
                 style="background-color: #fa7c20;">
                 <span>+</span> New Job
-            </a>
+            </button>
         </div>
     </x-slot>
 
-    <div>
+    <div x-data="{ showModal: {{ $errors->any() || request('open_modal') ? 'true' : 'false' }} }" x-on:open-modal-servis.window="showModal = true">
         <div class="max-w-7xl">
 
             <x-alert />
@@ -134,5 +134,180 @@
             @endif
 
         </div>
+
+        {{-- Modal Tambah Servis --}}
+        <div x-show="showModal" x-cloak x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0" class="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style="background-color: rgba(0,0,0,0.6);">
+            <div @click.outside="showModal = false" x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+
+                <div class="p-5 overflow-y-auto flex-1">
+                    <div class="flex items-start justify-between mb-1">
+                        <h3 class="font-extrabold text-lg text-gray-900">New Job</h3>
+                        <button type="button" @click="showModal = false" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="text-gray-500 text-xs mb-4">Buat data servis baru untuk kendaraan yang masuk.</p>
+
+                    <form action="{{ route('admin.servis.store') }}" method="POST" class="space-y-3">
+                        @csrf
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <x-input-label for="kendaraan_id" value="Kendaraan" />
+                                <select id="kendaraan_id" name="kendaraan_id" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                                    <option value="">-- Pilih Kendaraan --</option>
+                                    @foreach ($kendaraans as $kendaraan)
+                                        <option value="{{ $kendaraan->id }}"
+                                            {{ old('kendaraan_id', request('kendaraan_id')) == $kendaraan->id ? 'selected' : '' }}>
+                                            {{ $kendaraan->tahun }} {{ $kendaraan->merek }} {{ $kendaraan->model }}
+                                            ({{ $kendaraan->plat_nomor }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <x-input-error :messages="$errors->get('kendaraan_id')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="mekanik_id" value="Mekanik" />
+                                <select id="mekanik_id" name="mekanik_id" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                                    <option value="">-- Pilih Mekanik --</option>
+                                    @forelse ($mekaniks as $mekanik)
+                                        <option value="{{ $mekanik->id }}"
+                                            {{ old('mekanik_id') == $mekanik->id ? 'selected' : '' }}>
+                                            {{ $mekanik->nama }}
+                                        </option>
+                                    @empty
+                                    @endforelse
+                                </select>
+                                @if ($mekaniks->isEmpty())
+                                    <p class="text-xs text-amber-600 mt-1">Semua mekanik sibuk.</p>
+                                @endif
+                                <x-input-error :messages="$errors->get('mekanik_id')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <div>
+                                <x-input-label for="tanggal_masuk" value="Tanggal Masuk" />
+                                <x-text-input id="tanggal_masuk" name="tanggal_masuk" type="date"
+                                    class="block mt-1 w-full" :value="old('tanggal_masuk', date('Y-m-d'))" required />
+                                <x-input-error :messages="$errors->get('tanggal_masuk')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="status" value="Status" />
+                                <select id="status" name="status" required
+                                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">
+                                    <option value="menunggu" {{ old('status') === 'menunggu' ? 'selected' : '' }}>
+                                        Menunggu</option>
+                                    <option value="proses" {{ old('status') === 'proses' ? 'selected' : '' }}>Proses
+                                    </option>
+                                    <option value="selesai" {{ old('status') === 'selesai' ? 'selected' : '' }}>
+                                        Selesai</option>
+                                    <option value="diambil" {{ old('status') === 'diambil' ? 'selected' : '' }}>
+                                        Diambil</option>
+                                </select>
+                                <x-input-error :messages="$errors->get('status')" class="mt-2" />
+                            </div>
+                            <div>
+                                <x-input-label for="total_biaya" value="Total Biaya (Rp)" />
+                                <x-text-input id="total_biaya" name="total_biaya" type="number" min="0"
+                                    class="block mt-1 w-full" :value="old('total_biaya', 0)" required />
+                                <x-input-error :messages="$errors->get('total_biaya')" class="mt-2" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <x-input-label for="keluhan" value="Keluhan" />
+                            <textarea id="keluhan" name="keluhan" rows="2" required
+                                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-indigo-200">{{ old('keluhan') }}</textarea>
+                            <x-input-error :messages="$errors->get('keluhan')" class="mt-2" />
+                        </div>
+
+                        {{-- Spare Parts (compact, hanya 1 baris default) --}}
+                        <div>
+                            <x-input-label value="Spare Part (opsional)" />
+                            <div id="spare-parts-container" class="mt-1 space-y-2">
+                                <div class="flex gap-2 items-center spare-part-row">
+                                    <select name="spare_parts[0][id]"
+                                        class="flex-1 border-gray-300 rounded-md shadow-sm text-sm focus:ring focus:ring-indigo-200">
+                                        <option value="">-- Pilih --</option>
+                                        @foreach ($spareParts as $part)
+                                            <option value="{{ $part->id }}">{{ $part->nama }} (Stok:
+                                                {{ $part->stok }})</option>
+                                        @endforeach
+                                    </select>
+                                    <input type="number" name="spare_parts[0][jumlah]" min="1"
+                                        value="1"
+                                        class="w-16 border-gray-300 rounded-md shadow-sm text-sm focus:ring focus:ring-indigo-200">
+                                    <button type="button" onclick="removeRowServis(this)"
+                                        class="text-red-500 hover:text-red-700 text-sm px-1">✕</button>
+                                </div>
+                            </div>
+                            <button type="button" onclick="addSparePartRowServis()"
+                                class="mt-1 text-xs text-blue-600 hover:underline">+ Tambah baris</button>
+                        </div>
+
+                        <div class="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+                            <button type="button" @click="showModal = false"
+                                class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800">
+                                Batal
+                            </button>
+                            <button type="submit"
+                                class="px-6 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
+                                style="background-color: #183356;">
+                                Save job
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script>
+        let rowIndexServis = 1;
+        const sparePartsServis = @json($spareParts);
+
+        function addSparePartRowServis() {
+            const container = document.getElementById('spare-parts-container');
+            const div = document.createElement('div');
+            div.className = 'flex gap-2 items-center spare-part-row';
+
+            let options = '<option value="">-- Pilih Spare Part --</option>';
+            sparePartsServis.forEach(part => {
+                options +=
+                    `<option value="${part.id}">${part.nama} (Stok: ${part.stok}) - Rp ${part.harga.toLocaleString('id-ID')}</option>`;
+            });
+
+            div.innerHTML = `
+                <select name="spare_parts[${rowIndexServis}][id]"
+                    class="flex-1 border-gray-300 rounded-md shadow-sm text-sm focus:ring focus:ring-indigo-200">
+                    ${options}
+                </select>
+                <input type="number" name="spare_parts[${rowIndexServis}][jumlah]" min="1" value="1"
+                    placeholder="Jml"
+                    class="w-16 border-gray-300 rounded-md shadow-sm text-sm focus:ring focus:ring-indigo-200">
+                <button type="button" onclick="removeRowServis(this)"
+                    class="text-red-500 hover:text-red-700 text-sm">✕</button>
+            `;
+            container.appendChild(div);
+            rowIndexServis++;
+        }
+
+        function removeRowServis(btn) {
+            btn.closest('.spare-part-row').remove();
+        }
+    </script>
 </x-app-layout>
