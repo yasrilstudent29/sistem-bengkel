@@ -1,84 +1,71 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-extrabold text-3xl text-gray-900 leading-tight">
             Riwayat Servis
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="-mt-9">
+        <div class="max-w-7xl">
 
             <x-alert />
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">No</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Kendaraan</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Mekanik</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Tgl Masuk</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Keluhan</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Total Biaya
-                                </th>
-                                <th class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            @forelse ($servis as $index => $item)
-                                <tr>
-                                    <td class="px-6 py-4 text-sm text-gray-600">{{ $servis->firstItem() + $index }}</td>
-                                    <td class="px-6 py-4 text-sm font-medium text-gray-900">
-                                        {{ $item->kendaraan->tahun }} {{ $item->kendaraan->merek }} {{ $item->kendaraan->model }}
-                                        <span
-                                            class="text-gray-500 text-xs block">{{ $item->kendaraan->plat_nomor }}</span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">{{ $item->mekanik->nama }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">
-                                        {{ $item->tanggal_masuk->format('d M Y') }}</td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">
-                                        {{ Str::limit($item->keluhan, 40) }}
-                                    </td>
-                                    <td class="px-6 py-4 text-sm">
-                                        @php
-                                            $statusColor = match ($item->status) {
-                                                'menunggu' => 'bg-yellow-100 text-yellow-700',
-                                                'proses' => 'bg-blue-100 text-blue-700',
-                                                'selesai' => 'bg-green-100 text-green-700',
-                                                'diambil' => 'bg-gray-100 text-gray-700',
-                                                default => 'bg-gray-100 text-gray-700',
-                                            };
-                                        @endphp
-                                        <span class="text-xs font-bold px-2 py-1 rounded-full {{ $statusColor }}">
-                                            {{ ucfirst($item->status) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-sm text-gray-600">
-                                        Rp {{ number_format($item->total_biaya, 0, ',', '.') }}
-                                    </td>
-                                    <td class="px-6 py-4 text-right text-sm">
-                                        <a href="{{ route('user.servis.show', $item) }}"
-                                            class="text-blue-600 hover:underline">Detail</a>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="8" class="px-6 py-8 text-center text-gray-500">
-                                        Belum ada riwayat servis.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-                @if ($servis->hasPages())
-                    <div class="px-6 py-4 border-t border-gray-200">
-                        {{ $servis->links() }}
+            <p class="text-gray-500 text-base -mt-1 mb-6">
+                Pantau status dan riwayat servis kendaraan Anda.
+            </p>
+
+            {{-- Card Grid --}}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                @forelse ($servis as $item)
+                    @php
+                        $statusColor = match ($item->status) {
+                            'menunggu' => 'bg-yellow-100 text-yellow-700',
+                            'proses' => 'bg-blue-100 text-blue-700',
+                            'selesai' => 'bg-green-100 text-green-700',
+                            'diambil' => 'bg-gray-100 text-gray-700',
+                            default => 'bg-gray-100 text-gray-700',
+                        };
+                    @endphp
+                    <a href="{{ route('user.servis.show', $item) }}"
+                        class="group bg-white rounded-xl border border-gray-300 shadow p-5 hover:border-orange-400 transition-colors block">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <p class="font-semibold text-gray-900 group-hover:text-orange-500 transition-colors">
+                                    {{ $item->kendaraan->tahun }} {{ $item->kendaraan->merek }}
+                                    {{ $item->kendaraan->model }}
+                                </p>
+                                <p class="text-sm text-gray-500 mt-0.5">
+                                    Plat {{ $item->kendaraan->plat_nomor }} — Mekanik: {{ $item->mekanik->nama }}
+                                </p>
+                            </div>
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-full {{ $statusColor }} shrink-0">
+                                {{ ucfirst($item->status) }}
+                            </span>
+                        </div>
+
+                        <p class="text-sm text-gray-600 mt-3">{{ Str::limit($item->keluhan, 80) }}</p>
+
+                        <div class="flex items-center justify-between mt-3 text-sm">
+                            <span class="text-gray-400">
+                                Masuk {{ $item->tanggal_masuk->format('d M Y') }}
+                            </span>
+                            <span class="font-semibold text-gray-900">
+                                Rp {{ number_format($item->total_biaya, 0, ',', '.') }}
+                            </span>
+                        </div>
+                    </a>
+                @empty
+                    <div class="col-span-full text-center text-gray-500 py-12">
+                        Belum ada riwayat servis.
                     </div>
-                @endif
+                @endforelse
             </div>
+
+            @if ($servis->hasPages())
+                <div class="mt-6">
+                    {{ $servis->links() }}
+                </div>
+            @endif
 
         </div>
     </div>
