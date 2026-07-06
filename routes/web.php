@@ -41,23 +41,23 @@ Route::middleware(['auth', 'verified', 'admin'])
         // Dashboard Admin
         Route::get('/dashboard', function () {
             $totalServis = \App\Models\Servis::count();
-            $servisProses = \App\Models\Servis::where('status', 'proses')->count();
-            $servisSelesai = \App\Models\Servis::where('status', 'selesai')->count();
             $totalMekanik = \App\Models\Mekanik::where('status', 'aktif')->count();
-            $totalKendaraan = \App\Models\Kendaraan::count();
-            $totalUser = \App\Models\User::where('role', 'user')->count();
-            $servisTerbaru = \App\Models\Servis::with(['kendaraan.user', 'mekanik'])
-                ->latest()->take(5)->get();
+            $totalKendaraan = \App\Models\Kendaraan::whereHas('user.customer')->count();
+            $totalCustomer = \App\Models\Customer::count();
 
-            return view('admin.dashboard', compact(
-                'totalServis',
-                'servisProses',
-                'servisSelesai',
-                'totalMekanik',
-                'totalKendaraan',
-                'totalUser',
-                'servisTerbaru'
-            ));
+            $servisBerjalan = \App\Models\Servis::with(['kendaraan.user', 'mekanik'])
+            ->whereIn('status', ['menunggu', 'proses'])
+            ->latest()
+            ->take(5)
+            ->get();
+
+        return view('admin.dashboard', compact(
+            'totalServis',
+            'totalMekanik',
+            'totalKendaraan',
+            'totalCustomer',
+            'servisBerjalan'
+        ));
         })->name('dashboard');
 
         // Manajemen Servis
