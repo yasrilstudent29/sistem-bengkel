@@ -18,7 +18,7 @@
             <x-alert />
 
             <p class="text-gray-500 text-base -mt-9 mb-6">
-                Kelola data mekanik bengkel Anda — kontak, spesialisasi, dan status ketersediaan.
+                Tempat seluruh data mekanik yang bekerja tersimpan
             </p>
 
             {{-- Search Bar --}}

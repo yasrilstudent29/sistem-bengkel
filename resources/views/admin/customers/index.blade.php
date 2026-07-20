@@ -7,7 +7,7 @@
             <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-modal-customer'))"
                 class="flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
                 style="background-color: #fa7c20;">
-                <span>+</span> Add customer
+                <span>+</span> Tambah customer
             </button>
         </div>
     </x-slot>
@@ -18,7 +18,7 @@
             <x-alert />
 
             <p class="text-gray-500 text-base -mt-9 mb-6">
-                Database customer bengkel Anda — nama, kontak, dan riwayat.
+                Seluruh kelengkapan data customer yang akan melakukan servis
             </p>
 
             {{-- Search Bar --}}
@@ -86,7 +86,7 @@
                             <a href="{{ route('admin.customers.show', $customer) }}"
                                 class="px-5 py-2 rounded-lg text-white text-sm font-semibold hover:opacity-90 transition"
                                 style="background-color: #183356;">
-                                View details
+                                Lihat details
                             </a>
                         </div>
                     </div>
@@ -178,7 +178,7 @@
                             <button type="submit"
                                 class="px-6 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
                                 style="background-color: #183356;">
-                                Save customer
+                                Simpan customer
                             </button>
                         </div>
                     </form>

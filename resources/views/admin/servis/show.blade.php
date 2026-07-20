@@ -2,7 +2,7 @@
     <x-slot name="header">
         <a href="{{ route('admin.servis.index') }}"
             class="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-3 py-1.5 rounded-lg transition -ml-3">
-            ← Back to jobs
+            ← Kembali ke halaman servis
         </a>
     </x-slot>
 
@@ -45,7 +45,7 @@
                 <div class="flex items-center gap-2">
                     <button type="button" @click="showEditModal = true"
                         class="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 text-sm font-medium hover:border-orange-400 hover:text-orange-600 transition">
-                        Edit job
+                        Edit servis
                     </button>
                     <a href="{{ route('admin.servis.struk', $servis) }}"
                         class="flex items-center gap-1.5 px-3 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
@@ -63,7 +63,7 @@
 
                 {{-- Work Order --}}
                 <div class="bg-white rounded-xl border border-gray-300 shadow p-6">
-                    <h3 class="font-bold text-gray-900 mb-4">Work Order</h3>
+                    <h3 class="font-bold text-gray-900 mb-4">Data servis</h3>
                     <div class="space-y-4 text-sm">
                         <div>
                             <p class="text-gray-500">Keluhan</p>
@@ -130,7 +130,7 @@
 
             {{-- Vehicle --}}
             <div class="bg-white rounded-xl border border-gray-300 shadow p-6">
-                <h3 class="font-bold text-gray-900 mb-4">Vehicle</h3>
+                <h3 class="font-bold text-gray-900 mb-4">Kendaraan</h3>
                 <a href="{{ route('admin.kendaraan.show', $servis->kendaraan) }}"
                     class="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition w-fit">
                     <div class="w-9 h-9 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
@@ -192,7 +192,7 @@
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="text-red-600 hover:underline text-sm font-medium">
-                        Delete job
+                        Hapus servis
                     </button>
                 </form>
             </div>

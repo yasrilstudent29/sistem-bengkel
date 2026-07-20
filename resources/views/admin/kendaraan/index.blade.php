@@ -83,7 +83,7 @@
                                 <span class="font-medium">{{ $kendaraan->plat_nomor }}</span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span class="text-gray-400">Odometer:</span>
+                                <span class="text-gray-400">Spedometer:</span>
                                 <span class="font-medium">{{ number_format($kendaraan->odometer ?? 0, 0, ',', '.') }}
                                     km</span>
                             </div>
@@ -107,7 +107,7 @@
                             <a href="{{ route('admin.kendaraan.show', $kendaraan) }}"
                                 class="px-5 py-2 rounded-lg text-white text-sm font-semibold hover:opacity-90 transition"
                                 style="background-color: #183356;">
-                                View details
+                                Lihat details
                             </a>
                         </div>
                     </div>

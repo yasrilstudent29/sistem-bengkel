@@ -2,7 +2,7 @@
     <x-slot name="header">
         <a href="{{ route('admin.kendaraan.index') }}"
             class="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-orange-600 hover:bg-orange-50 px-3 py-1.5 rounded-lg transition -ml-3">
-            ← Back to vehicles
+            ← Kembali ke halaman kendaraan
         </a>
     </x-slot>
 
@@ -44,12 +44,12 @@
                 <div class="flex items-center gap-2">
                     <button type="button" @click="showEditModal = true"
                         class="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 text-sm font-medium hover:border-orange-400 hover:text-orange-600 transition">
-                        Edit vehicle
+                        Edit kendaraan
                     </button>
                     <a href="{{ route('admin.servis.index', ['open_modal' => 1, 'kendaraan_id' => $kendaraan->id]) }}"
                         class="flex items-center gap-1.5 px-3 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
                         style="background-color: #fa7c20;">
-                        + New job
+                        + Servis baru
                     </a>
                 </div>
             </div>
@@ -58,14 +58,14 @@
 
                 {{-- Vehicle Details --}}
                 <div class="bg-white rounded-xl border border-gray-300 shadow p-6">
-                    <h3 class="font-bold text-gray-900 mb-4">Vehicle details</h3>
+                    <h3 class="font-bold text-gray-900 mb-4">Kendaraan detail</h3>
                     <div class="space-y-3 text-sm">
                         <div class="flex items-center justify-between">
                             <span class="text-gray-500">Plate</span>
                             <span class="font-medium text-gray-900">{{ $kendaraan->plat_nomor }}</span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-500">Make</span>
+                            <span class="text-gray-500">Merek</span>
                             <span class="font-medium text-gray-900">{{ $kendaraan->merek }}</span>
                         </div>
                         <div class="flex items-center justify-between">
@@ -73,7 +73,7 @@
                             <span class="font-medium text-gray-900">{{ $kendaraan->model }}</span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-500">Year</span>
+                            <span class="text-gray-500">Tahun</span>
                             <span class="font-medium text-gray-900">{{ $kendaraan->tahun }}</span>
                         </div>
                         <div class="flex items-center justify-between">
@@ -81,11 +81,11 @@
                             <span class="font-medium text-gray-900">{{ $kendaraan->vin ?? '-' }}</span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-500">Color</span>
+                            <span class="text-gray-500">Warna</span>
                             <span class="font-medium text-gray-900">{{ $kendaraan->warna ?? '-' }}</span>
                         </div>
                         <div class="flex items-center justify-between">
-                            <span class="text-gray-500">Mileage</span>
+                            <span class="text-gray-500">Spedometer</span>
                             <span
                                 class="font-medium text-gray-900">{{ number_format($kendaraan->odometer ?? 0, 0, ',', '.') }}
                                 km</span>
@@ -99,7 +99,7 @@
 
                 {{-- Owner --}}
                 <div class="bg-white rounded-xl border border-gray-300 shadow p-6">
-                    <h3 class="font-bold text-gray-900 mb-4">Owner</h3>
+                    <h3 class="font-bold text-gray-900 mb-4">Pemilik</h3>
                     @if ($kendaraan->user->customer)
                         <a href="{{ route('admin.customers.show', $kendaraan->user->customer) }}"
                             class="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition">
