@@ -2,12 +2,12 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-extrabold text-3xl text-gray-900 leading-tight">
-                Repair Jobs
+                Servis
             </h2>
             <button type="button" onclick="window.dispatchEvent(new CustomEvent('open-modal-servis'))"
                 class="flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
                 style="background-color: #fa7c20;">
-                <span>+</span> New Job
+                <span>+</span> Servis baru
             </button>
         </div>
     </x-slot>
@@ -18,7 +18,7 @@
             <x-alert />
 
             <p class="text-gray-500 text-base -mt-9 mb-6">
-                Servis kendaraan yang sedang berjalan di bengkel Anda.
+                Seluruh servis kendaraan yang sedang berjalan di bengkel saat ini.
             </p>
 
             {{-- Filter Tabs --}}
@@ -105,7 +105,7 @@
                             <a href="{{ route('admin.servis.show', $item) }}"
                                 class="px-5 py-2 rounded-lg text-white text-sm font-semibold hover:opacity-90 transition shrink-0"
                                 style="background-color: #183356;">
-                                View details
+                                Lihat detail
                             </a>
                             <form action="{{ route('admin.servis.destroy', $item) }}" method="POST"
                                 onsubmit="return confirm('Yakin ingin menghapus data servis ini?')">
@@ -149,7 +149,7 @@
 
                 <div class="p-5 overflow-y-auto flex-1">
                     <div class="flex items-start justify-between mb-1">
-                        <h3 class="font-extrabold text-lg text-gray-900">New Job</h3>
+                        <h3 class="font-extrabold text-lg text-gray-900">Servis baru</h3>
                         <button type="button" @click="showModal = false" class="text-gray-400 hover:text-gray-600">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -267,7 +267,7 @@
                             <button type="submit"
                                 class="px-6 py-2 rounded-lg text-white text-sm font-bold hover:opacity-90 transition"
                                 style="background-color: #183356;">
-                                Save job
+                                Tambah servis
                             </button>
                         </div>
                     </form>
